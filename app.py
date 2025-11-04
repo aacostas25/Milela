@@ -118,7 +118,7 @@ with tabs[2]:
 
     mitos_por_pais = {
         "Argentina": ["El Familiar", "Luz Mala", "Pombero"],
-        "Bolivia": ["La Kantuta", "El Ekeko", "La Viuda del Monte"],
+        "Bolivia": ["Jichi", "Ekeko", "La Viuda del Monte"],
         "Chile": ["El Caleuche", "La Pincoya", "El Trauco"],
         "Colombia": ["La Llorona", "Madremonte", "La Patasola"],
         "Ecuador": ["El Duende", "La Dama Tapada", "La Tunda"],
@@ -138,12 +138,18 @@ with tabs[2]:
             - País: {pais}
             - Mito favorito: {mito_favorito}
             """)
-
             # 🔹 Mostrar recomendaciones
             st.divider()
             st.subheader("✨ Recomendaciones similares a tu mito favorito:")
-            recomendaciones = recommend_similar_to_item(mito_favorito, top_k=5)
 
+            # Buscar el ID correspondiente al título seleccionado
+            match = df_artefactos[df_artefactos["titulo"].str.lower() == mito_favorito.lower()]
+            if not match.empty:
+                mito_id = match.iloc[0]["id"]
+                recomendaciones = recommend_similar_to_item(item_id=mito_id, top_k=5)
+            else:
+                recomendaciones = pd.DataFrame()
+        
             if recomendaciones.empty:
                 st.info("No se encontraron mitos similares en la base de datos.")
             else:
@@ -152,6 +158,7 @@ with tabs[2]:
                         st.write(f"**Temas:** {row['temas_top3_str']}")
                         st.write(f"**Región:** {row['region']}")
                         st.write(row['texto'])
+
         else:
             st.warning("Por favor, ingresa tu nombre antes de enviar.")
 
