@@ -100,66 +100,47 @@ def normalize_title(t: str) -> str:
     """Normaliza títulos quitando tildes y mayúsculas para comparar duplicados."""
     t = unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode("utf-8")
     return t.lower().strip()
-
 def recommend_similar_to_item(item_id: str, top_k = 5) -> pd.DataFrame:
-    """
-    Recomienda mitos similares a uno dado combinando similitud semántica,
-    similitud temática y coincidencia de país.
-    Parámetros fijos para Streamlit:
-        top_k = 8
-        fetch_k = 200
-        w_sem = 0.75
-        w_topic = 0.20
-        w_country = 0.05
-    """
-    # --- parámetros fijos ---
+    """Recomienda mitos similares combinando texto y temas."""
+    
     fetch_k = 200
-    w_sem = 0.75
-    w_topic = 0.20
+    w_sem = 0.7
+    w_topic = 0.25
     w_country = 0.05
-    lambda_mmr = 0.6
-    country_filter = None
-    topic_filter = None
 
-    # --- verificación de ID ---
     if item_id not in ID2ROW:
         raise KeyError(f"id no encontrado: {item_id}")
 
     row_idx = ID2ROW[item_id]
-    qv = emb[row_idx:row_idx+1]
+    base_row = df_artefactos.iloc[row_idx]
+    base_title = normalize_title(base_row["titulo"])
+    base_topics = base_row["temas_top3"]
+
+    # 🔸 Crear embedding combinado: texto + temas
+    query_text = f"{base_row['texto']} Temas: {', '.join(base_topics)}"
+    qv = sbert.encode([query_text], convert_to_numpy=True).astype("float32")
+    qv = normalize(qv, norm="l2", axis=1)
+
+    # 🔸 Buscar en FAISS
     D, I = index.search(qv, fetch_k + 1)
     sims, idxs = D.ravel(), I.ravel()
-
     cand = df_artefactos.iloc[idxs].copy()
     cand["sim_sem"] = sims
 
-    # 🔸 título base normalizado
-    base_title = normalize_title(df_artefactos.iloc[row_idx]["titulo"])
-
-    # 🔸 excluir el mismo mito y los títulos iguales (incluso de otros países)
+    # 🔸 Excluir mismo mito y duplicados por título
     cand = cand[cand.index != row_idx]
     cand = cand[cand["titulo"].apply(lambda t: normalize_title(t) != base_title)]
 
-    # 🔸 filtros (ninguno activo por defecto)
-    cand = _apply_filters(cand, include_countries=country_filter, include_topics=topic_filter)
-    if cand.empty:
-        return pd.DataFrame(columns=["id","pais","region","titulo","temas_top3_str","score","sim_sem"])
+    # 🔸 Calcular similitud temática adicional
+    cand["sim_topic"] = cand["temas_top3"].apply(lambda xs: _jaccard(xs, base_topics))
 
-    # 🔸 cálculos de similitud
-    base_topics = df_artefactos.iloc[row_idx]["temas_top3"]
-    pref_countries = _ensure_list(country_filter)
-    cand["sim_topic"] = cand["temas_top3"].apply(lambda xs: _topic_overlap(xs, base_topics))
-    cand["country_pref"] = cand["pais"].apply(lambda c: _country_match(c, pref_countries))
-    cand["score"] = w_sem*cand["sim_sem"] + w_topic*cand["sim_topic"] + w_country*cand["country_pref"]
+    # 🔸 Peso final: semántica + temas + país (si existiera)
+    cand["score"] = w_sem*cand["sim_sem"] + w_topic*cand["sim_topic"]
 
-    # 🔸 eliminar títulos duplicados dentro del resultado
-    cand = cand.sort_values("score", ascending=False)
+    cand = cand.sort_values("score", ascending=False).head(top_k)
     cand = cand.loc[~cand["titulo"].apply(normalize_title).duplicated(keep="first")]
-    out = cand.head(top_k)
 
-    cols = ["id","pais","region","titulo","temas_top3_str","score","sim_sem","sim_topic","country_pref","texto"]
-    return out.assign(id=[ROW2ID[i] for i in out.index]).reindex(columns=cols)
-
+    return cand[["id","pais","region","titulo","temas_top3_str","score","sim_sem","sim_topic","texto"]]
 
 
 # ======================
