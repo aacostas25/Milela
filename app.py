@@ -41,8 +41,11 @@ with st.form("milela_encuesta"):
         "Uruguay": ["El Lobizón", "La Luz Mala", "El Pombero"]
     }
     
-    mito_favorito = st.selectbox("Mito o leyenda favorita", mitos_por_pais[pais])
-    
+    mito_favorito = st.selectbox(
+    "Mito o leyenda favorita",
+    mitos_por_pais[pais],
+    key="mito_favorito"
+)
     enviado = st.form_submit_button("Enviar")
 
 if enviado:
