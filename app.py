@@ -155,6 +155,26 @@ if not df_filtrado.empty:
 else:
     st.info("No hay mitos disponibles para este país.")
 
+st.markdown("---")
+st.header("🔍 Buscar mitos por temática o descripción")
+
+query = st.text_input("Escribe una palabra o tema (ej: 'espíritus', 'agua', 'rituales')")
+
+if st.button("Buscar"):
+    if query.strip():
+        resultados = buscar_mitos_por_texto(query, top_k=5)
+        if resultados.empty:
+            st.warning("No se encontraron mitos relacionados.")
+        else:
+            st.success(f"Se encontraron {len(resultados)} mitos relacionados:")
+            for _, row in resultados.iterrows():
+                with st.expander(f"📜 {row['titulo']} ({row['pais']}) – Score: {row['score']:.3f}"):
+                    st.write(f"**Temas:** {row['temas_top3_str']}")
+                    st.write(f"**Región:** {row['region']}")
+                    st.write(row['texto'])
+    else:
+        st.warning("Por favor, escribe un tema o palabra clave.")
+
 
 st.markdown("---")
 st.caption("Proyecto desarrollado por **Andrea Acosta y Alexandra Moraga** – Pontificia Universidad Católica de Chile, 2025")
