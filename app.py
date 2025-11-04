@@ -5,6 +5,8 @@ import os
 import glob
 import faiss
 import numpy as np
+from sentence_transformers import SentenceTransformer
+from sklearn.preprocessing import normalize
 
 # ======================
 # Carga de datos
@@ -49,6 +51,25 @@ def load_artifacts():
 
 df_artefactos, index, emb = load_artifacts()
 
+@st.cache_resource
+def load_sbert_model():
+    model = SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
+    return model
+
+sbert = load_sbert_model()
+
+def buscar_mitos_por_texto(query, top_k=5):
+    # Vectoriza la consulta
+    qv = sbert.encode([query], convert_to_numpy=True).astype("float32")
+    qv = normalize(qv, norm="l2", axis=1)
+
+    # Busca en FAISS
+    D, I = index.search(qv, top_k)
+
+    # Construye resultados
+    resultados = df_artefactos.iloc[I[0]].copy()
+    resultados["score"] = D[0]
+    return resultados[["pais", "region", "titulo", "temas_top3_str", "score", "texto"]]
 
 # ======================
 # Descripción del proyecto
