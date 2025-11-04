@@ -117,7 +117,7 @@ with tabs[2]:
                         ["Argentina","Bolivia","Chile","Colombia","Ecuador","México","Perú","Uruguay"])
 
     mitos_por_pais = {
-        "Argentina": ["El Familiar", "La Luz Mala", "El Pombero"],
+        "Argentina": ["El Familiar", "Luz Mala", "Pombero"],
         "Bolivia": ["La Kantuta", "El Ekeko", "La Viuda del Monte"],
         "Chile": ["El Caleuche", "La Pincoya", "El Trauco"],
         "Colombia": ["La Llorona", "Madremonte", "La Patasola"],
