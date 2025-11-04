@@ -137,7 +137,6 @@ streamlit run app.py
 
 ## 📄 Licencia
 
-Este proyecto se distribuye bajo la licencia **MIT**.  
 El contenido cultural recopilado pertenece a dominio público o fuentes con acceso libre para uso académico.
 
 ---
