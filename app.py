@@ -109,6 +109,7 @@ with tabs[2]:
             - País: {pais}
             - Mito favorito: {mito_favorito}
             """)
+            st.info("Proximamente, se recomendarán leyendas según tus preferencias.")
         else:
             st.warning("Por favor, ingresa tu nombre antes de enviar.")
 
