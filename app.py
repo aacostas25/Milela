@@ -190,7 +190,7 @@ with tabs[2]:
     mitos_por_pais = {
         "Argentina": ["El Familiar", "Luz Mala", "Pombero"],
         "Bolivia": ["Jichi", "Ekeko", "Chancho Verde"],
-        "Chile": ["El Caleuche", "La Prodigiosa Pincoya", "El Trauco"],
+        "Chile": ["Caleuche", "La Prodigiosa Pincoya", "El Trauco"],
         "Colombia": ["Bolefuego", "Madremonte", "Patasola"],
         "Ecuador": ["Bambero", "La Dama Tapada", "El Riviel"],
         "México": ["Coatlicue", "Cegua", "Chaac"],
