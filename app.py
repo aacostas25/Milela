@@ -69,7 +69,7 @@ mitos_por_pais = {
     "Argentina": ["El Familiar", "La Luz Mala", "El Pombero"],
     "Bolivia": ["La Kantuta", "El Ekeko", "La Viuda del Monte"],
     "Chile": ["El Caleuche", "La Pincoya", "El Trauco"],
-    "Colombia": ["La Llorona", "El Mohán", "La Patasola"],
+    "Colombia": ["La Llorona", "Madremonte", "La Patasola"],
     "Ecuador": ["El Duende", "La Dama Tapada", "La Tunda"],
     "México": ["La Nahuala", "El Chupacabras", "La Llorona"],
     "Perú": ["El Tunche", "La Jarjacha", "El Pishtaco"],
