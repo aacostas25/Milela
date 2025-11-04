@@ -3,6 +3,7 @@ import pandas as pd
 import json
 import os
 import glob
+import faiss
 
 # ======================
 # Carga de datos
