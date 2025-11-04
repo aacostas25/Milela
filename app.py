@@ -32,6 +32,20 @@ def load_country_jsons(data_dir):
 
 DATA_DIR = "InfoCompleta"
 df = load_country_jsons(DATA_DIR)
+# ======================
+# Carga artefactos
+# ======================
+@st.cache_resource
+def load_artifacts():
+    # Carga el corpus
+    df_artefactos = pd.read_json("milela_enriquecido.json", encoding="utf-8")
+    # Carga el índice FAISS
+    index = faiss.read_index("milela_faiss.index")
+    # Carga embeddings (por si los necesitas para mostrar similitudes directas)
+    emb = np.load("milela_embeddings.npy")
+    return df_artefactos, index, emb
+
+df_artefactos, index, emb = load_artifacts()
 
 
 # ======================
