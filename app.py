@@ -79,7 +79,7 @@ tabs = st.tabs([
 ])
 
 # --- TAB 1: Encuesta ---
-with tabs[0]:
+with tabs[2]:
     st.subheader("Encuesta de preferencias")
 
     nombre = st.text_input("Nombre")
@@ -128,7 +128,7 @@ with tabs[1]:
         st.info("No hay mitos disponibles para este país.")
 
 # --- TAB 3: Buscador ---
-with tabs[2]:
+with tabs[0]:
     st.subheader("Buscar mitos por temática o descripción")
     query = st.text_input("Escribe una palabra o tema (ej: 'espíritus', 'agua', 'rituales')")
     if st.button("Buscar"):
