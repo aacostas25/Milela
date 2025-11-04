@@ -124,7 +124,7 @@ with tabs[2]:
         "Ecuador": ["Bambero", "La Dama Tapada", "El Riviel"],
         "México": ["Coatlicue", "Cegua", "Chaac"],
         "Perú": ["Inkarri", "Catarata Gocta", "Bufeo Colorado"],
-        "Uruguay": ["El Lobizón", "La Luz Mala", "El Pombero"]
+        "Uruguay": ["Caipora", "El Currinche", "Cachimba Del Rey"]
     }
 
     mito_favorito = st.selectbox("Mito o leyenda favorita", mitos_por_pais[pais])
