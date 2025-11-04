@@ -101,7 +101,7 @@ def normalize_title(t: str) -> str:
     t = unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode("utf-8")
     return t.lower().strip()
 
-def recommend_similar_to_item(item_id: str) -> pd.DataFrame:
+def recommend_similar_to_item(item_id: str, top_k = 5) -> pd.DataFrame:
     """
     Recomienda mitos similares a uno dado combinando similitud semántica,
     similitud temática y coincidencia de país.
@@ -113,7 +113,6 @@ def recommend_similar_to_item(item_id: str) -> pd.DataFrame:
         w_country = 0.05
     """
     # --- parámetros fijos ---
-    top_k = 8
     fetch_k = 200
     w_sem = 0.75
     w_topic = 0.20
