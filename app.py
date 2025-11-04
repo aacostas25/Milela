@@ -122,7 +122,7 @@ with tabs[2]:
         "Chile": ["El Caleuche", "La Prodigiosa Pincoya", "El Trauco"],
         "Colombia": ["Bolefuego", "Madremonte", "Patasola"],
         "Ecuador": ["Bambero", "La Dama Tapada", "El Riviel"],
-        "México": ["La Nahuala", "El Chupacabras", "La Llorona"],
+        "México": ["Coatlicue", "Cegua", "Chaac"],
         "Perú": ["El Tunche", "La Jarjacha", "El Pishtaco"],
         "Uruguay": ["El Lobizón", "La Luz Mala", "El Pombero"]
     }
