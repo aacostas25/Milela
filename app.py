@@ -71,10 +71,10 @@ def normalize_title(t: str) -> str:
 ID2ROW = {str(row["id"]): i for i, row in df_artefactos.reset_index().iterrows()}
 ROW2ID = {i: str(row["id"]) for i, row in df_artefactos.reset_index().iterrows()}
 
-def recommend_similar_to_item(item_title: str, top_k: int = 5):
+def recommend_similar_to_item(item_id: str, top_k: int = 5):
     """Busca en el dataset el mito más cercano por título y recomienda otros similares."""
     # Buscar la fila cuyo título coincida (tolerante a mayúsculas)
-    mask = df_artefactos["titulo"].str.lower() == item_title.lower()
+    mask = df_artefactos["titulo"].str.lower() == item_id.lower()
     if not mask.any():
         return pd.DataFrame(columns=["pais","region","titulo","temas_top3_str","score","texto"])
     
