@@ -73,9 +73,10 @@ Permite explorar, buscar y descubrir historias de toda la región.
 
 # === Tabs principales ===
 tabs = st.tabs([
-    "📋 Encuesta de preferencias",
+    "🔍 Buscar por temática",
     "📖 Explorar mitos por país",
-    "🔍 Buscar por temática"
+    "📋 Encuesta de preferencias"
+    
 ])
 
 # --- TAB 1: Encuesta ---
