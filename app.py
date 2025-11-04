@@ -132,6 +132,7 @@ with tabs[1]:
 with tabs[0]:
     st.subheader("Buscar mitos por temática o descripción")
     query = st.text_input("Escribe una palabra o tema (ej: 'espíritus', 'agua', 'rituales')")
+    query = query.lower()
     if st.button("Buscar"):
         if query.strip():
             resultados = buscar_mitos_por_texto(query, top_k=5)
