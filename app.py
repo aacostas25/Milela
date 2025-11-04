@@ -119,8 +119,8 @@ with tabs[2]:
     mitos_por_pais = {
         "Argentina": ["El Familiar", "Luz Mala", "Pombero"],
         "Bolivia": ["Jichi", "Ekeko", "Chancho Verde"],
-        "Chile": ["El Caleuche", "La Pincoya", "El Trauco"],
-        "Colombia": ["La Llorona", "Madremonte", "La Patasola"],
+        "Chile": ["El Caleuche", "La Prodigiosa Pincoya", "El Trauco"],
+        "Colombia": ["Bolefuego", "Madremonte", "Patasola"],
         "Ecuador": ["El Duende", "La Dama Tapada", "La Tunda"],
         "México": ["La Nahuala", "El Chupacabras", "La Llorona"],
         "Perú": ["El Tunche", "La Jarjacha", "El Pishtaco"],
@@ -144,6 +144,7 @@ with tabs[2]:
 
             # Buscar el ID correspondiente al título seleccionado
             match = df_artefactos[df_artefactos["titulo"].str.lower() == mito_favorito.lower()]
+            st.write(f"El match fue: {match}")
             if not match.empty:
                 mito_id = match.iloc[0]["id"]
                 recomendaciones = recommend_similar_to_item(item_id=mito_id, top_k=5)
