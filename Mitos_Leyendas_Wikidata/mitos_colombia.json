@@ -1,0 +1,261 @@
+[
+    {
+        "id": "CO-001",
+        "titulo": "Bolefuego",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "La Bola de fuego o Candileja es una aparición luminosa como un farol que aparece en las noches oscuras de la región de los Llanos. Gira y zumba con violencia, apagándose y encendiéndose."
+    },
+    {
+        "id": "CO-002",
+        "titulo": "Boraro",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "El Boraro es una criatura humanoide del folklore colombiano que habita en la zona amazónica."
+    },
+    {
+        "id": "CO-003",
+        "titulo": "Cadejo",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "El Cadejo es un perro espectral de gran tamaño con ojos brillantes que arrastra cadenas. Durante las noches aparece en sitios solitarios para cuidar o atormentar a los borrachos o trasnochadores. En varias regiones de Centroamérica la leyenda habla de dos cadejos: uno blanco, divino y protector, y otro negro, monstruoso y malvado. En Costa Rica y Panamá, el Cadejo es uno solo, de color negro y aunque monstruoso, generalmente es inofensivo."
+    },
+    {
+        "id": "CO-004",
+        "titulo": "Luis Antonio Chivas",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "Luis Antonio Chivas fue un personaje histórico que hizo parte del patrimonio cultural bogotano. Más conocido como el Loco Chivas, nació en Quibdó, la capital del Chocó, Colombia. Fue uno de los cuatro locos de la década de los cuarenta que deambularon por las calles de Bogotá."
+    },
+    {
+        "id": "CO-005",
+        "titulo": "Chupacabras",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "El Chupacabras es un críptido legendario que se describe como un ser que ataca a animales de diferentes especies en zonas ganaderas o rurales chupándoles la sangre."
+    },
+    {
+        "id": "CO-006",
+        "titulo": "El Dorado",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "El Dorado es una ciudad de oro legendaria ubicada en el territorio del antiguo Virreinato de Nueva Granada, en una zona donde existen abundantes minas de oro. En el siglo XVI, en la actual Colombia, los exploradores españoles tuvieron noticias de una ceremonia realizada en el altiplano cundiboyacense, donde un cacique se cubría el cuerpo con polvo de oro y realizaba ofrendas en una laguna sagrada. Este pueblo era el muisca y el sitio donde se realizaba la ceremonia habría sido la laguna de Guatavita. La noticia de la riqueza muisca atrajo hasta la sabana de Bogotá a expediciones originadas en Quito, Santa Marta y Coro. La supuesta existencia de un reino dorado motivó numerosas expediciones y se mantuvo vigente hasta el siglo XIX. Sin embargo, no se tuvo éxito en su hallazgo. Algunos de los objetos prehispánicos recuperados por saqueadores en la Laguna de Guatavita se encuentran expuestos en el Museo del Oro en Bogotá."
+    },
+    {
+        "id": "CO-007",
+        "titulo": "El Patetarro",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "El Patetarro es un ser gigantesco de apariencia fea, peluda, sucia y desgreñada que habita en los montes y parajes recónditos en las zonas mineras de Antioquia, Chocó, Cundinamarca entre otras regiones de Colombia."
+    },
+    {
+        "id": "CO-008",
+        "titulo": "Francisco El Hombre",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "Francisco el Hombre es el arquetipo del juglar vallenato del folclor de Colombia. Su existencia tiene componentes tanto legendarios como históricos que lo han convertido en figura emblemática del imaginario popular de la Costa Caribe."
+    },
+    {
+        "id": "CO-009",
+        "titulo": "Guando",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "Guando es el nombre dado por las culturas precolombinas en Colombia al conjunto de actividades realizadas durante los rituales funerarios. Se puede traducir libremente al español como funeral. Es una ceremonia que se lleva a cabo para despedir a una persona fallecida."
+    },
+    {
+        "id": "CO-010",
+        "titulo": "La Mancarita",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "La Mancarita, también conocida como La chismosa de los campesinos, es una leyenda nacida en los pueblos y veredas de Colombia. Trata sobre una mujer con apariencia monstruosa, desgreñada, con largas uñas y pelo. Tiene un solo seno en la mitad de su pecho y los pies al revés. Todo su cuerpo está cubierto por pelo, siendo difícil distinguir la forma de su rostro debido a su abundante cabellera. Se le describe como una criatura salvaje y terrible. Nunca se le ve por áreas rurales, le teme a animales y personas, pero si alguna persona se llega a topar con ella dejándose hechizar con sus encantos es posible que nunca más nadie vuelva a saber de esta. Se alimenta de frutas y raíces de los árboles y arbustos, y algunas veces por placer come humanos. Su lugar común es entre los bosques del área andina de Colombia, los caminos y veredas. Se le puede encontrar en lugares de la región colombiana como Santander, Norte de Santander, Boyacá y Cundinamarca. Le gusta salir en la noche a caminar buscando comida o víctimas indefensas. Como monstruo salvaje utiliza la hipnosis como método de ataque para atraer personas y hacerlas desaparecer sin dejar rastro. Puede imitar el llanto de una mujer, el grito de un niño o la voz de un hombre pidiendo ayuda para confundir a sus víctimas llevándolas hacia su trampa."
+    },
+    {
+        "id": "CO-011",
+        "titulo": "La Mula Herrada",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "La mula herrada es un relato fantástico de la tradición oral hondureña, ocurrido durante la colonización española."
+    },
+    {
+        "id": "CO-012",
+        "titulo": "La Sayona",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "La Sayona, dentro del llano colombiano, se maneja la creencia que La Sayona fue una mujer que destrozó las vestiduras sagradas de un sacerdote y Dios la condenó a vivir eternamente con mucha hambre. Su nombre en vida era Sarona, era una mujer atractiva y seductora. Pero inexplicablemente su rostro cambió: le salieron enormes dientes, los ojos se le agrandaron. Ella se tragó a su hermano y desde ese momento recorre parajes solitarios en las madrugadas y conquista hombres ebrios para luego devorarlos.​\nPara protegerse de este espectro es estar acompañado de buenos los animales de color negro; como perros y gatos. También se asegura que usar tabaco es herramienta de protección.​"
+    },
+    {
+        "id": "CO-013",
+        "titulo": "Llorona",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "La Llorona es un fantasma del folclore hispanoamericano que, según la tradición oral, es el alma en pena de una mujer que ahogó a sus hijos. Luego, arrepentida y maldecida, los busca por las noches por ríos, pueblos y ciudades, asustando con su sobrecogedor llanto a quienes la ven u oyen en la noche. Su leyenda posee gran diversidad de versiones, con generalidades y particularismos propios de muchas regiones geográficas. A pesar de ello, su relato mágico y sobrenatural, emergido de múltiples orígenes, es constante y reconocible, con añadidos, texturizaciones e hibridaciones de muy diversos manejos."
+    },
+    {
+        "id": "CO-014",
+        "titulo": "Madremonte",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "La Madremonte, llamada también la Madre de cuba, es un personaje legendario o mitológico colombiano, presente en diversas regiones como Antioquia, Andes centrales, occidentales de Colombia, y los valles del Magdalena y el valle del Cauca. Es descrita de diversas formas, generalmente una mujer que cuidaba en los montes y las selvas, y tiene poderes sobre el clima y la vegetación. Su origen proviene de antiguas deidades indígenas sudamericanas que representan a la Madre Tierra."
+    },
+    {
+        "id": "CO-015",
+        "titulo": "El Diablo En El Puente Del Común",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "La leyenda trata sobre un puente construido por satanás y sus ayudantes del infierno entre Bogotá y Zipaquirá. El hombre encargado de la obra llamado Florentino quería realizar el proyecto pero no contaba con el dinero suficiente y el gobierno no se lo podía brindar, así que contactó al diablo y le pidió que si terminaba el puente en una noche él le daba su alma. Satanás accedió, sacó a la mayoría de sus diablos del infierno y los puso a trabajar en el puente. Satanás le dijo a Florentino que una vez cantara el gallo en la mañana y si el puente estaba terminado se llevaría su alma. Florentino aceptó. Mientras los diablos trabajaban y satanás los vigilaba, Florentino estaba escondido detrás de un arbusto con un sacerdote. Cuando ya faltaba la última piedra por colocar, el diablo cantaba victoria, pero no se percató de que Florentino de la nada saltó del arbusto con el padre y este bendiciendo con agua bendita el puente. Satanás conmocionado se fue de picada hacia el río con sus diablos y en forma de venganza lanzó su pata tratando de destruir el puente, pero por las bendiciones hechas por el padre esta solo logró quedar estampada en una piedra."
+    },
+    {
+        "id": "CO-016",
+        "titulo": "El Perro Negro",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "Es un demonio que habita por las calles y veredas de Boyacá y Cundinamarca. Aparece en caminos y parajes solitarios, sobre todo en las noches oscuras. Su tamaño es de aproximadamente 2,5 a 3 metros. Es de pelaje negro, tiene colmillos grandes y filosos, de su cuello cuelgan unas cadenas, estruendosa boca y sus ojos sangrados. A las personas que se encuentra las asesina de impacto o los descuartiza o hace que pierdan el conocimiento. En las noches oscuras se le escucha aullar como si fuera un alma en pena."
+    },
+    {
+        "id": "CO-017",
+        "titulo": "Goranchacha Hijo Del Sol Y Profeta Chibcha",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "Se le reconocía como el hijo del sol y predicador religioso. Decidió gobernar Ramiriquí convirtiéndola en Hunza, pero se volvió un dictador, castigaba hasta por las cosas más pequeñas, hacía que las personas veneraran al sol en los templos que mandó a construir en el pueblo. Se dice que desapareció cuando les dijo a sus súbditos que iban a llegar al pueblo personas fuertes y crueles y que él no quería ser testigo del sufrimiento de ellos, así que simplemente se desvaneció entre el cercado y nunca más se le volvió a ver."
+    },
+    {
+        "id": "CO-018",
+        "titulo": "El Tunjo",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "Se dice que es un hijo huérfano de Dios, pero en realidad es un hijo del mal, un espanto, un espíritu burlón. El mito cuenta que se trata de un bebé de aproximadamente 1 año, con dientes filosos y ojos color rojo que habita entre caminos, carreteras y veredas de Cundinamarca y Boyacá. Se aparece en forma de estatuilla de oro a los caminantes que son codiciosos. Cuando lo recogen desaparece burlándose de ellos. También se presenta en forma de recién nacido. Cuando la persona que lo encuentra lo alza este comienza a reírse fuertemente. Si esta persona no lo alimenta provoca inundaciones y tormentas hasta que el mismo las detenga. Si la persona se quiere deshacer del tunjo puede bautizarlo con la señal de la cruz y este volverá a ser de oro."
+    },
+    {
+        "id": "CO-019",
+        "titulo": "Tomagata El Cacique Rabón",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "El cacique rabón nace en el pueblo de Tunja, era un descendiente de los muiscas. Su apariencia física lo exponía como forma de burla debido a que tenía una cola de león, cuatro orejas y un solo ojo. A los habitantes de la zona no les causaba miedo sino burla, lo cual lo hacía sentir vulnerable y solo. A pesar de que gobernaba el territorio no se sentía lo suficientemente importante para ser respetado. Tomagata era estéril lo cual hizo más difícil que consiguiera una mujer que lo amara. Trataba de conquistar varias indias bellas pero ellas al notar su apariencia física lo despreciaban. Por tantas burlas hechas hacia Tomagata los dioses decidieron darle el don de poder convertir a hombres en bestias y a los sirvientes los convertía en animales, por eso la gente de Hunza no se atrevía ni a mirarlo al ojo. Vivió más de cien años en celibato siendo cacicato de Tunja."
+    },
+    {
+        "id": "CO-020",
+        "titulo": "Muelona",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "La Muelona, también conocida como la Colmillona o la Dientona, es un personaje de la mitología colombiana."
+    },
+    {
+        "id": "CO-021",
+        "titulo": "Patasola",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "La Patasola, en el folclore narrativo de Colombia, es una mujer monstruosa que se caracteriza porque tiene una sola pierna que termina en forma de pezuña. Su aspecto es aterrador: cabellera enmarañada, pequeños ojos de tigresa, boca grande y colmillos enormes. Según la leyenda, es el alma en pena de una mujer infiel que deshonró a su marido y nunca lo supo valorar ni querer."
+    },
+    {
+        "id": "CO-022",
+        "titulo": "Sacerdote Sin Cabeza",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "El sacerdote sin cabeza, también conocido como el Cura, Fraile o Padre sin cabeza, es un personaje perteneciente a una leyenda colonial del folclor latinoamericano, el cual es descrito como el fantasma de un sacerdote sin su cabeza."
+    },
+    {
+        "id": "CO-023",
+        "titulo": "Siguanaba",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "La Siguanaba es un espectro del folclor iberoamericano que, según la tradición, es una atractiva mujer desnuda o semidesnuda, pero con el rostro oculto."
+    },
+    {
+        "id": "CO-024",
+        "titulo": "Tarumama",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "La Tarumama, llamada también Turumama, es un personaje legendario del folclor colombiano, popular en la región de Nariño. Se le describe como una vieja fea y arrugada, con cascos de mula en lugar de pies, y unos senos tan grandes que debe cargarlos sobre los hombros."
+    },
+    {
+        "id": "CO-025",
+        "titulo": "Tunda",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "La Tunda es una leyenda en la mitología de Esmeraldas en Ecuador y en el folclore de Colombia, especialmente entre la comunidad afrodescendiente, aunque existe sincretismo con las deidades del resto de culturas. Era descrita como una mujer monstruo con similitudes con un vampiro que atrae a las personas hacia los bosques y los retiene cautivos allí."
+    },
+    {
+        "id": "CO-026",
+        "titulo": "Princesa Zulia",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "Zulia (1538 - 1561). Cuenta la leyenda que fue una líder y princesa indígena de varias tribus en el actual departamento de Norte de Santander en Colombia. Hija del cacique Cinera de la tribu de los Cineras."
+    },
+    {
+        "id": "CO-027",
+        "titulo": "Barichara",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "Barichara es un municipio colombiano ubicado en el departamento de Santander, en la provincia de Guanentá. Es reconocido por la conservación de su arquitectura colonial de finales del siglo XVIII. Su centro histórico fue declarado Monumento Nacional y Patrimonio Cultural de la Nación mediante el Decreto 1654 de 1978."
+    },
+    {
+        "id": "CO-028",
+        "titulo": "Bochica",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "Bochica es, en la mitología muisca, un héroe civilizador o un dios."
+    },
+    {
+        "id": "CO-029",
+        "titulo": "Chachi",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "El pueblo chachi es un grupo étnico indígena que habita en la zona selvática del noroeste de Esmeraldas sobre la costa norte de Ecuador. Los chachis pertenecen a la familia lingüística barbacoana que hablan el idioma cha'palaa o cha'palaachi. Junto con los tsáchilas (con los que al parecer están emparentados) y los éperas, son los tres únicos grupos amerindios prehispánicos que han sobrevivido en el área costera ecuatoriana, si bien los épera son originarios de Colombia y llegaron a Ecuador en épocas recientes."
+    },
+    {
+        "id": "CO-030",
+        "titulo": "Cuentacuentos",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "Un cuentacuentos, también llamado contador, cuentista o cuentero, es un narrador oral de cuentos e historias."
+    },
+    {
+        "id": "CO-031",
+        "titulo": "Duende",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "Los duendes son criaturas mitológicas fantásticas de forma humanoide pero de tamaño pequeño que están presentes en el folclore de muchas culturas. La etimología de su nombre proviene de la expresión \"duen de casa\" o \"dueño de casa\", por el carácter de los duendes al \"apoderarse\" de los hogares y encantarlos, o bien del árabe \"duar de la casa\" (\"que habita, habitante\")."
+    },
+    {
+        "id": "CO-032",
+        "titulo": "Huaca",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "La voz huaca o guaca designaba todas las sacralidades fundamentales incaicas: santuarios, ídolos, templos, tumbas, momias, lugares sagrados, animales, aquellos astros de los que los aillus, o clanes, creían descender, los propios antecesores, incluyendo a las deidades principales, el Sol y la Luna, los cuales eran venerados a través de diferentes ceremonias."
+    },
+    {
+        "id": "CO-033",
+        "titulo": "El Árbol Del Terror",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "Después de media noche el árbol se movía hacia la mitad de la carretera y ahí se accidentaba cualquier carro o moto que pasara después de esa hora. Cada vez que iban a cortar el árbol se les olvidaba, hasta que un día tuvieron que ir con cura para cortarlo. También se dice que anteriormente las prostitutas del pueblo abortaban y enterraban sus fetos en este árbol, por lo que en el tronco se reflejan rostros de niños. Y así finaliza la historia aunque se dice que el árbol sigue pero en otro lado del municipio."
+    },
+    {
+        "id": "CO-034",
+        "titulo": "La Mula De Tres Patas",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "Un hombre iba a caballo cerca del río (actualmente paradero del transporte urbano). El hombre al pasar se cayó y se ahogó y como nadie lo ayudó, empezó a tomar venganza asustando: pasa en una mula de tres patas por la carretera que ahora se denomina la vuelta del gas."
+    },
+    {
+        "id": "CO-035",
+        "titulo": "El Pez Dorado",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "Se encuentra con un pez dorado que va creciendo a medida que la persona se acerca."
+    },
+    {
+        "id": "CO-036",
+        "titulo": "San Juan Pescador",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "Lo cual es señal de aviso a los pescadores para que puedan empezar a pescar."
+    },
+    {
+        "id": "CO-037",
+        "titulo": "Un Pez Gigante",
+        "pais": "Colombia",
+        "region": "",
+        "texto": "En el lugar en el cual el río Risaralda desemboca en el Cauca, cuando el nivel del río baja en el verano se ve la vela de un barco que allí se hundió y en este mismo lugar un pez gigantesco bocachico que alumbra en la noche. Por otra parte, los pescadores de La Virginia cuentan la historia del gran bagre que se encuentra en los chorros \"sitio del río Cauca\". Dicen que este pez es capaz de devorar un hombre con gran facilidad, además de esto han intentado pescarlo con ganchos de carnicería, colocando como flotadores canecas de metal vacías de 55 galones, pero la fuerza, habilidad y sabiduría de este monstruo es tan enorme que evade las trampas con gran facilidad."
+    }
+]
