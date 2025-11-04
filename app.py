@@ -123,7 +123,7 @@ with tabs[2]:
         "Colombia": ["Bolefuego", "Madremonte", "Patasola"],
         "Ecuador": ["Bambero", "La Dama Tapada", "El Riviel"],
         "México": ["Coatlicue", "Cegua", "Chaac"],
-        "Perú": ["El Tunche", "La Jarjacha", "El Pishtaco"],
+        "Perú": ["Inkarri", "Catarata Gocta", "Bufeo Colorado"],
         "Uruguay": ["El Lobizón", "La Luz Mala", "El Pombero"]
     }
 
