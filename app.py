@@ -72,23 +72,23 @@ ID2ROW = {str(row["id"]): i for i, row in df_artefactos.reset_index().iterrows()
 ROW2ID = {i: str(row["id"]) for i, row in df_artefactos.reset_index().iterrows()}
 
 def recommend_similar_to_item(item_id: str, top_k: int = 5):
-    """Busca en el dataset el mito más cercano por título y recomienda otros similares."""
-    # Buscar la fila cuyo título coincida (tolerante a mayúsculas)
-    mask = df_artefactos["titulo"].str.lower() == item_id.lower()
-    if not mask.any():
-        return pd.DataFrame(columns=["pais","region","titulo","temas_top3_str","score","texto"])
-    
-    row_idx = mask.idxmax()
+    """Recomienda mitos similares dado su ID."""
+    if item_id not in ID2ROW:
+        raise KeyError(f"id no encontrado: {item_id}")
+
+    row_idx = ID2ROW[item_id]
     base_title = normalize_title(df_artefactos.loc[row_idx, "titulo"])
     qv = emb[row_idx:row_idx+1]
-    D, I = index.search(qv, 200)
 
+    D, I = index.search(qv, 200)
     cand = df_artefactos.iloc[I[0]].copy()
     cand["sim_sem"] = D[0]
+
+    # Excluir el mismo mito y los títulos iguales (ej: 'La Llorona' en otros países)
     cand = cand[cand.index != row_idx]
     cand = cand[cand["titulo"].apply(lambda t: normalize_title(t) != base_title)]
-    cand = cand.sort_values("sim_sem", ascending=False).head(top_k)
 
+    cand = cand.sort_values("sim_sem", ascending=False).head(top_k)
     return cand[["id","pais","region","titulo","temas_top3_str","sim_sem","texto"]]
 
 # ======================
