@@ -121,7 +121,7 @@ with tabs[2]:
         "Bolivia": ["Jichi", "Ekeko", "Chancho Verde"],
         "Chile": ["El Caleuche", "La Prodigiosa Pincoya", "El Trauco"],
         "Colombia": ["Bolefuego", "Madremonte", "Patasola"],
-        "Ecuador": ["El Duende", "La Dama Tapada", "La Tunda"],
+        "Ecuador": ["Bambero", "La Dama Tapada", "El Riviel"],
         "México": ["La Nahuala", "El Chupacabras", "La Llorona"],
         "Perú": ["El Tunche", "La Jarjacha", "El Pishtaco"],
         "Uruguay": ["El Lobizón", "La Luz Mala", "El Pombero"]
