@@ -32,6 +32,7 @@ def load_country_jsons(data_dir):
 DATA_DIR = "InfoCompleta"
 df = load_country_jsons(DATA_DIR)
 
+
 # ======================
 # Carga artefactos y modelo
 # ======================
@@ -43,7 +44,9 @@ def load_artifacts():
     return df_artefactos, index, emb
 
 df_artefactos, index, emb = load_artifacts()
-
+# Reconstruir mapeos ID ↔ índice
+ID2ROW = {str(row["id"]): i for i, row in df_artefactos.reset_index().iterrows()}
+ROW2ID = {i: str(row["id"]) for i, row in df_artefactos.reset_index().iterrows()}
 @st.cache_resource
 def load_sbert_model():
     return SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
