@@ -4,7 +4,7 @@ import json, os, glob, unicodedata
 import faiss, numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import normalize
-
+from typing import List, Optional, Iterable
 # ======================
 # Carga de datos
 # ======================
@@ -62,34 +62,103 @@ def buscar_mitos_por_texto(query, top_k=5):
     return resultados[["id","pais", "region", "titulo", "temas_top3_str", "score", "texto"]]
 
 # ======================
-# Recomendador por mito favorito
+# Recomendador avanzado por mito favorito
 # ======================
+
+def _ensure_list(x) -> List[str]:
+    if x is None: return []
+    if isinstance(x, str): return [x]
+    return list(x)
+
+def _jaccard(a: Iterable[str], b: Iterable[str]) -> float:
+    A, B = set([s.lower() for s in a]), set([s.lower() for s in b])
+    if not A and not B: return 0.0
+    return len(A & B) / max(1, len(A | B))
+
+def _topic_overlap(row_topics: List[str], query_topics: List[str]) -> float:
+    return _jaccard(row_topics, query_topics)
+
+def _country_match(row_country: str, pref_countries: List[str]) -> float:
+    return 1.0 if pref_countries and row_country.lower() in {c.lower() for c in pref_countries} else 0.0
+
+def _apply_filters(cand_df: pd.DataFrame,
+                   include_countries: Optional[List[str]]=None,
+                   include_topics: Optional[List[str]]=None) -> pd.DataFrame:
+    sub = cand_df
+    if include_countries:
+        s = {c.lower() for c in include_countries}
+        sub = sub[sub["pais"].str.lower().isin(s)]
+    if include_topics:
+        s = {t.lower() for t in include_topics}
+        sub = sub[sub["temas_top3"].apply(lambda xs: any(t.lower() in s for t in xs))]
+    return sub
+
 def normalize_title(t: str) -> str:
+    """Normaliza títulos quitando tildes y mayúsculas para comparar duplicados."""
     t = unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode("utf-8")
     return t.lower().strip()
 
-ID2ROW = {str(row["id"]): i for i, row in df_artefactos.reset_index().iterrows()}
-ROW2ID = {i: str(row["id"]) for i, row in df_artefactos.reset_index().iterrows()}
+def recommend_similar_to_item(item_id: str) -> pd.DataFrame:
+    """
+    Recomienda mitos similares a uno dado combinando similitud semántica,
+    similitud temática y coincidencia de país.
+    Parámetros fijos para Streamlit:
+        top_k = 8
+        fetch_k = 200
+        w_sem = 0.75
+        w_topic = 0.20
+        w_country = 0.05
+    """
+    # --- parámetros fijos ---
+    top_k = 8
+    fetch_k = 200
+    w_sem = 0.75
+    w_topic = 0.20
+    w_country = 0.05
+    lambda_mmr = 0.6
+    country_filter = None
+    topic_filter = None
 
-def recommend_similar_to_item(item_id: str, top_k: int = 5):
-    """Recomienda mitos similares dado su ID."""
+    # --- verificación de ID ---
     if item_id not in ID2ROW:
         raise KeyError(f"id no encontrado: {item_id}")
 
     row_idx = ID2ROW[item_id]
-    base_title = normalize_title(df_artefactos.loc[row_idx, "titulo"])
     qv = emb[row_idx:row_idx+1]
+    D, I = index.search(qv, fetch_k + 1)
+    sims, idxs = D.ravel(), I.ravel()
 
-    D, I = index.search(qv, 200)
-    cand = df_artefactos.iloc[I[0]].copy()
-    cand["sim_sem"] = D[0]
+    cand = df_artefactos.iloc[idxs].copy()
+    cand["sim_sem"] = sims
 
-    # Excluir el mismo mito y los títulos iguales (ej: 'La Llorona' en otros países)
+    # 🔸 título base normalizado
+    base_title = normalize_title(df_artefactos.iloc[row_idx]["titulo"])
+
+    # 🔸 excluir el mismo mito y los títulos iguales (incluso de otros países)
     cand = cand[cand.index != row_idx]
     cand = cand[cand["titulo"].apply(lambda t: normalize_title(t) != base_title)]
 
-    cand = cand.sort_values("sim_sem", ascending=False).head(top_k)
-    return cand[["id","pais","region","titulo","temas_top3_str","sim_sem","texto"]]
+    # 🔸 filtros (ninguno activo por defecto)
+    cand = _apply_filters(cand, include_countries=country_filter, include_topics=topic_filter)
+    if cand.empty:
+        return pd.DataFrame(columns=["id","pais","region","titulo","temas_top3_str","score","sim_sem"])
+
+    # 🔸 cálculos de similitud
+    base_topics = df_artefactos.iloc[row_idx]["temas_top3"]
+    pref_countries = _ensure_list(country_filter)
+    cand["sim_topic"] = cand["temas_top3"].apply(lambda xs: _topic_overlap(xs, base_topics))
+    cand["country_pref"] = cand["pais"].apply(lambda c: _country_match(c, pref_countries))
+    cand["score"] = w_sem*cand["sim_sem"] + w_topic*cand["sim_topic"] + w_country*cand["country_pref"]
+
+    # 🔸 eliminar títulos duplicados dentro del resultado
+    cand = cand.sort_values("score", ascending=False)
+    cand = cand.loc[~cand["titulo"].apply(normalize_title).duplicated(keep="first")]
+    out = cand.head(top_k)
+
+    cols = ["id","pais","region","titulo","temas_top3_str","score","sim_sem","sim_topic","country_pref","texto"]
+    return out.assign(id=[ROW2ID[i] for i in out.index]).reindex(columns=cols)
+
+
 
 # ======================
 # Interfaz principal
@@ -141,12 +210,15 @@ with tabs[2]:
             # 🔹 Mostrar recomendaciones
             st.divider()
             st.subheader("✨ Recomendaciones similares a tu mito favorito:")
-
-            # Buscar el ID correspondiente al título seleccionado
             match = df_artefactos[df_artefactos["titulo"].str.lower() == mito_favorito.lower()]
             if not match.empty:
                 mito_id = match.iloc[0]["id"]
-                recomendaciones = recommend_similar_to_item(item_id=mito_id, top_k=5)
+                recomendaciones = recommend_similar_to_item(item_id=mito_id)
+            # Buscar el ID correspondiente al título seleccionado
+            #match = df_artefactos[df_artefactos["titulo"].str.lower() == mito_favorito.lower()]
+            #if not match.empty:
+                #mito_id = match.iloc[0]["id"]
+                #recomendaciones = recommend_similar_to_item(item_id=mito_id, top_k=5)
             else:
                 recomendaciones = pd.DataFrame()
         
