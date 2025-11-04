@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import json, os, glob
+import json, os, glob, unicodedata
 import faiss, numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import normalize
@@ -8,7 +8,6 @@ from sklearn.preprocessing import normalize
 # ======================
 # Carga de datos
 # ======================
-
 @st.cache_data
 def load_country_jsons(data_dir):
     rows = []
@@ -36,7 +35,6 @@ df = load_country_jsons(DATA_DIR)
 # ======================
 # Carga artefactos y modelo
 # ======================
-
 @st.cache_resource
 def load_artifacts():
     df_artefactos = pd.read_json("milela_enriquecido.json", encoding="utf-8")
@@ -52,18 +50,50 @@ def load_sbert_model():
 
 sbert = load_sbert_model()
 
+# ======================
+# Función de búsqueda textual
+# ======================
 def buscar_mitos_por_texto(query, top_k=5):
     qv = sbert.encode([query], convert_to_numpy=True).astype("float32")
     qv = normalize(qv, norm="l2", axis=1)
     D, I = index.search(qv, top_k)
     resultados = df_artefactos.iloc[I[0]].copy()
     resultados["score"] = D[0]
-    return resultados[["pais", "region", "titulo", "temas_top3_str", "score", "texto"]]
+    return resultados[["id","pais", "region", "titulo", "temas_top3_str", "score", "texto"]]
+
+# ======================
+# Recomendador por mito favorito
+# ======================
+def normalize_title(t: str) -> str:
+    t = unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode("utf-8")
+    return t.lower().strip()
+
+ID2ROW = {str(row["id"]): i for i, row in df_artefactos.reset_index().iterrows()}
+ROW2ID = {i: str(row["id"]) for i, row in df_artefactos.reset_index().iterrows()}
+
+def recommend_similar_to_item(item_title: str, top_k: int = 5):
+    """Busca en el dataset el mito más cercano por título y recomienda otros similares."""
+    # Buscar la fila cuyo título coincida (tolerante a mayúsculas)
+    mask = df_artefactos["titulo"].str.lower() == item_title.lower()
+    if not mask.any():
+        return pd.DataFrame(columns=["pais","region","titulo","temas_top3_str","score","texto"])
+    
+    row_idx = mask.idxmax()
+    base_title = normalize_title(df_artefactos.loc[row_idx, "titulo"])
+    qv = emb[row_idx:row_idx+1]
+    D, I = index.search(qv, 200)
+
+    cand = df_artefactos.iloc[I[0]].copy()
+    cand["sim_sem"] = D[0]
+    cand = cand[cand.index != row_idx]
+    cand = cand[cand["titulo"].apply(lambda t: normalize_title(t) != base_title)]
+    cand = cand.sort_values("sim_sem", ascending=False).head(top_k)
+
+    return cand[["id","pais","region","titulo","temas_top3_str","sim_sem","texto"]]
 
 # ======================
 # Interfaz principal
 # ======================
-
 st.title("🌎✨ MILELA – Mitos y Leyendas de Latinoamérica")
 st.write("""
 **Milela** integra, analiza y recomienda mitos y leyendas latinoamericanos
@@ -71,15 +101,13 @@ usando técnicas de **procesamiento del lenguaje natural (NLP)**.
 Permite explorar, buscar y descubrir historias de toda la región.
 """)
 
-# === Tabs principales ===
 tabs = st.tabs([
     "🔍 Buscar por temática",
     "📖 Explorar mitos por país",
     "📋 Encuesta de preferencias"
-    
 ])
 
-# --- TAB 1: Encuesta ---
+# --- TAB 3: Encuesta ---
 with tabs[2]:
     st.subheader("Encuesta de preferencias")
 
@@ -98,6 +126,7 @@ with tabs[2]:
         "Perú": ["El Tunche", "La Jarjacha", "El Pishtaco"],
         "Uruguay": ["El Lobizón", "La Luz Mala", "El Pombero"]
     }
+
     mito_favorito = st.selectbox("Mito o leyenda favorita", mitos_por_pais[pais])
 
     if st.button("Enviar"):
@@ -109,7 +138,20 @@ with tabs[2]:
             - País: {pais}
             - Mito favorito: {mito_favorito}
             """)
-            st.info("Proximamente, se recomendarán leyendas según tus preferencias.")
+
+            # 🔹 Mostrar recomendaciones
+            st.divider()
+            st.subheader("✨ Recomendaciones similares a tu mito favorito:")
+            recomendaciones = recommend_similar_to_item(mito_favorito, top_k=5)
+
+            if recomendaciones.empty:
+                st.info("No se encontraron mitos similares en la base de datos.")
+            else:
+                for _, row in recomendaciones.iterrows():
+                    with st.expander(f"📜 {row['titulo']} ({row['pais']}) – Similitud: {row['sim_sem']:.3f}"):
+                        st.write(f"**Temas:** {row['temas_top3_str']}")
+                        st.write(f"**Región:** {row['region']}")
+                        st.write(row['texto'])
         else:
             st.warning("Por favor, ingresa tu nombre antes de enviar.")
 
@@ -129,7 +171,7 @@ with tabs[1]:
     else:
         st.info("No hay mitos disponibles para este país.")
 
-# --- TAB 3: Buscador ---
+# --- TAB 1: Buscador ---
 with tabs[0]:
     st.subheader("Buscar mitos por temática o descripción")
     query = st.text_input("Escribe una palabra o tema (ej: 'espíritus', 'agua', 'rituales')")
