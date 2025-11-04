@@ -216,7 +216,7 @@ with tabs[2]:
             match = df_artefactos[df_artefactos["titulo"].str.lower() == mito_favorito.lower()]
             if not match.empty:
                 mito_id = match.iloc[0]["id"]
-                recomendaciones = recommend_similar_to_item(item_id=mito_id)
+                recomendaciones = recommend_similar_to_item(item_id=mito_id, top_k=5)
             # Buscar el ID correspondiente al título seleccionado
             #match = df_artefactos[df_artefactos["titulo"].str.lower() == mito_favorito.lower()]
             #if not match.empty:
