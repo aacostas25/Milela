@@ -4,6 +4,7 @@ import json
 import os
 import glob
 import faiss
+import numpy as np
 
 # ======================
 # Carga de datos
