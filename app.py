@@ -1,4 +1,38 @@
 import streamlit as st
+import pandas as pd
+import json
+import os
+import glob
+
+# ======================
+# Carga de datos
+# ======================
+
+@st.cache_data
+def load_country_jsons(data_dir):
+    rows = []
+    json_paths = glob.glob(os.path.join(data_dir, "*.json"))
+    if not json_paths:
+        raise FileNotFoundError(f"No se encontraron JSON en: {data_dir}")
+
+    for path in json_paths:
+        with open(path, "r", encoding="utf-8") as f:
+            arr = json.load(f)
+            for it in arr:
+                rows.append({
+                    "id": str(it.get("id","")).strip(),
+                    "titulo": str(it.get("titulo","")).strip(),
+                    "pais": str(it.get("pais","")).strip(),
+                    "region": str(it.get("region","")).strip(),
+                    "texto": str(it.get("texto","")).strip()
+                })
+    df = pd.DataFrame(rows).dropna(subset=["texto"])
+    df = df[df["texto"].str.len() > 20].reset_index(drop=True)
+    return df
+
+DATA_DIR = "Mitos_Leyendas_Wikidata"
+df = load_country_jsons(DATA_DIR)
+
 
 # ======================
 # Descripción del proyecto
