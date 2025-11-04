@@ -30,7 +30,7 @@ def load_country_jsons(data_dir):
     df = df[df["texto"].str.len() > 20].reset_index(drop=True)
     return df
 
-DATA_DIR = "Mitos_Leyendas_Wikidata"
+DATA_DIR = "InfoCompleta"
 df = load_country_jsons(DATA_DIR)
 
 
@@ -96,6 +96,28 @@ if st.button("Enviar"):
         st.info("Próximamente, Milela te recomendará nuevas leyendas basadas en tus gustos.")
     else:
         st.warning("Por favor, ingresa tu nombre antes de enviar.")
+# ======================
+# Sección de exploración de mitos
+# ======================
+
+st.subheader("📖 Explora los mitos y leyendas por país")
+
+pais_explorar = st.selectbox(
+    "Selecciona un país para explorar sus mitos",
+    sorted(df["pais"].unique()),
+    key="pais_explorar"
+)
+
+df_filtrado = df[df["pais"] == pais_explorar]
+
+if not df_filtrado.empty:
+    for _, row in df_filtrado.iterrows():
+        with st.expander(f"📜 {row['titulo']}"):
+            st.write(f"**Región:** {row['region']}")
+            st.write(row["texto"])
+else:
+    st.info("No hay mitos disponibles para este país.")
+
 
 st.markdown("---")
 st.caption("Proyecto desarrollado por **Andrea Acosta y Alexandra Moraga** – Pontificia Universidad Católica de Chile, 2025")
