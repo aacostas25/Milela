@@ -7,7 +7,7 @@ from sklearn.preprocessing import normalize
 from typing import List, Optional, Iterable
 from groq import Groq
 from PIL import Image
-from streamlit.locale import gettext as _
+
 # ======================
 # Configuración de Groq
 # ======================
@@ -174,8 +174,7 @@ def recommend_similar_to_item(item_id: str, top_k = 5) -> pd.DataFrame:
 col1, col2, col3 = st.columns((1, 4, 1))
 with col2:
     st.image(Image.open("milelalogo2.png"))
-st.markdown(_("# MILELA – Mitos y Leyendas de Latinoamérica"))
-st.title("🌎✨ MILELA – Mitos y Leyendas de Latinoamérica")
+st.title("MILELA – Mitos y Leyendas de Latinoamérica")
 st.write("""
 **Milela** integra, analiza y recomienda mitos y leyendas latinoamericanos
 usando técnicas de **procesamiento del lenguaje natural (NLP)**.
