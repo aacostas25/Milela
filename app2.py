@@ -174,7 +174,7 @@ def recommend_similar_to_item(item_id: str, top_k = 5) -> pd.DataFrame:
 col1, col2, col3 = st.columns((1, 4, 1))
 with col2:
     st.image(Image.open("milelalogo2.png"))
-st.title("MILELA – Mitos y Leyendas de Latinoamérica")
+st.title("Milela – Mitos y Leyendas de Latinoamérica")
 st.write("""
 **Milela** integra, analiza y recomienda mitos y leyendas latinoamericanos
 usando técnicas de **procesamiento del lenguaje natural (NLP)**.
