@@ -210,7 +210,7 @@ with tabs[3]:
         with col2:
             modelo_groq_crear = st.selectbox(
                 "Modelo:",
-                ["llama-3.3-70b-versatile", "llama-3.1-70b-versatile", "llama-3.1-8b-instant"],
+                ["llama-3.3-70b-versatile"],
                 key="crear_modelo",
                 help="Llama 3.3 70B es el más potente"
             )
@@ -225,8 +225,8 @@ with tabs[3]:
         )
         
         # Obtener datos completos del mito
-        mito_data_crear = df[df["titulo"] == mito_seleccionado_crear].iloc[0].to_dict()
-        
+        #mito_data_crear = df[df["titulo"] == mito_seleccionado_crear].iloc[0].to_dict()
+        mito_data_crear = df[(df["titulo"] == mito_seleccionado_crear) & (df["pais"] == pais_seleccionado_crear)].iloc[0].to_dict()
         # Mostrar mito original
         with st.expander("📜 Ver mito original"):
             st.write(f"**Título:** {mito_data_crear['titulo']}")
