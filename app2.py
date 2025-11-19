@@ -5,7 +5,7 @@ import faiss, numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import normalize
 from typing import List, Optional, Iterable
-from groq import Groq  # 🔹 NUEVO
+from groq import Groq
 
 # ======================
 # Configuración de Groq
@@ -17,37 +17,53 @@ except:
     GROQ_AVAILABLE = False
     st.warning("⚠️ No se pudo conectar a Groq. Agrega tu API key en secrets.")
 
-def consultar_groq(pregunta: str, contexto_mito: str = "", modelo: str = "mixtral-8x7b-32768") -> str:
+def modernizar_mito(mito_data: dict, modelo: str = "llama-3.3-70b-versatile") -> str:
     """
-    Envía una pregunta a Groq, opcionalmente con contexto de un mito.
+    Moderniza un mito usando Groq con instrucciones específicas.
     """
     if not GROQ_AVAILABLE:
         return "Error: Groq no está configurado. Agrega tu API key."
     
-    if contexto_mito:
-        prompt = f"""Eres un experto en mitología y leyendas latinoamericanas.
+    titulo = mito_data.get("titulo", "")
+    pais = mito_data.get("pais", "")
+    region = mito_data.get("region", "Región no especificada")
+    texto_original = mito_data.get("texto", "")
+    
+    instrucciones = f"""Eres un asistente experto en mitos y leyendas latinoamericanas.
 
-**Contexto del mito:**
-{contexto_mito}
+TAREA:
+Reescribir el mito de forma contemporánea, manteniendo fidelidad cultural y geográfica.
 
-**Pregunta del usuario:**
-{pregunta}
+RESTRICCIONES CULTURALES Y GEOGRÁFICAS:
+- No cambies el país ni la región de origen: {pais}, {region}.
+- No inventes paisajes incoherentes con ese lugar (por ejemplo, no hables de desiertos en Chiloé).
+- Si describes el entorno, usa solo elementos compatibles con el mito original o típicos de la zona
+  (mar, ríos, lluvias, islas, bosques, cordillera, etc., según corresponda).
+- Si no estás seguro de un detalle geográfico, es mejor omitirlo que inventarlo.
 
-Responde de forma clara, informativa y concisa, basándote en el contexto proporcionado."""
-    else:
-        prompt = f"""Eres un experto en mitología y leyendas latinoamericanas.
+REGLAS NARRATIVAS:
+- Mantén personajes principales, conflicto central y moraleja.
+- Usa un lenguaje claro y actual, pensando en adolescentes.
+- La extensión debe ser similar al original (no acortes demasiado ni extiendas excesivamente).
+- Conserva la esencia del mito pero hazlo accesible para lectores contemporáneos.
+- No uses lenguaje coloquial excesivo, mantén respeto por la tradición.
 
-**Pregunta:**
-{pregunta}
+MITO ORIGINAL:
+Título: {titulo}
+País: {pais}
+Región: {region}
 
-Responde de forma clara, informativa y concisa."""
+Texto:
+{texto_original}
+
+Ahora escribe la versión modernizada del mito manteniendo todas las restricciones anteriores:"""
     
     try:
         completion = groq_client.chat.completions.create(
             model=modelo,
-            messages=[{"role": "user", "content": prompt}],
+            messages=[{"role": "user", "content": instrucciones}],
             temperature=0.7,
-            max_tokens=1024,
+            max_tokens=2048,  # Aumentado para mitos más largos
         )
         return completion.choices[0].message.content
     except Exception as e:
@@ -101,7 +117,7 @@ def load_sbert_model():
 sbert = load_sbert_model()
 
 # ======================
-# Función de búsqueda textual
+# Funciones existentes (búsqueda, recomendación, etc.)
 # ======================
 def buscar_mitos_por_texto(query, top_k=5):
     qv = sbert.encode([query], convert_to_numpy=True).astype("float32")
@@ -111,36 +127,10 @@ def buscar_mitos_por_texto(query, top_k=5):
     resultados["score"] = D[0]
     return resultados[["id","pais", "region", "titulo", "temas_top3_str", "score", "texto"]]
 
-# ======================
-# Recomendador avanzado
-# ======================
-def _ensure_list(x) -> List[str]:
-    if x is None: return []
-    if isinstance(x, str): return [x]
-    return list(x)
-
-def _jaccard(a: Iterable[str], b: Iterable[str]) -> float:
+def _jaccard(a, b):
     A, B = set([s.lower() for s in a]), set([s.lower() for s in b])
     if not A and not B: return 0.0
     return len(A & B) / max(1, len(A | B))
-
-def _topic_overlap(row_topics: List[str], query_topics: List[str]) -> float:
-    return _jaccard(row_topics, query_topics)
-
-def _country_match(row_country: str, pref_countries: List[str]) -> float:
-    return 1.0 if pref_countries and row_country.lower() in {c.lower() for c in pref_countries} else 0.0
-
-def _apply_filters(cand_df: pd.DataFrame,
-                   include_countries: Optional[List[str]]=None,
-                   include_topics: Optional[List[str]]=None) -> pd.DataFrame:
-    sub = cand_df
-    if include_countries:
-        s = {c.lower() for c in include_countries}
-        sub = sub[sub["pais"].str.lower().isin(s)]
-    if include_topics:
-        s = {t.lower() for t in include_topics}
-        sub = sub[sub["temas_top3"].apply(lambda xs: any(t.lower() in s for t in xs))]
-    return sub
 
 def normalize_title(t: str) -> str:
     t = unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode("utf-8")
@@ -150,7 +140,6 @@ def recommend_similar_to_item(item_id: str, top_k = 5) -> pd.DataFrame:
     fetch_k = 200
     w_sem = 0.7
     w_topic = 0.25
-    w_country = 0.05
 
     if item_id not in ID2ROW:
         raise KeyError(f"id no encontrado: {item_id}")
@@ -190,92 +179,126 @@ usando técnicas de **procesamiento del lenguaje natural (NLP)**.
 Permite explorar, buscar y descubrir historias de toda la región.
 """)
 
-# 🔹 AGREGAMOS UNA NUEVA PESTAÑA PARA EL CHATBOT
 tabs = st.tabs([
     "🔍 Buscar por temática",
     "📖 Explorar mitos por país",
     "📋 Encuesta de preferencias",
-    "🤖 Consultar con IA"  # 🔹 NUEVA PESTAÑA
+    "🤖 Modernizar mito con IA"  # 🔹 NUEVA PESTAÑA
 ])
 
-# --- TAB 4: Consultar con IA ---
+# --- TAB 4: Modernizar mito ---
 with tabs[3]:
-    st.subheader("🤖 Pregúntale a la IA sobre mitos latinoamericanos")
+    st.subheader("🤖 Moderniza un mito usando IA")
     
-    # Selector de modelo
-    modelo_groq = st.selectbox(
-        "Selecciona el modelo:",
-        ["mixtral-8x7b-32768", "llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
-        help="Mixtral es equilibrado, Llama 3.3 es más potente"
-    )
-    
-    # Opción 1: Pregunta general
-    st.markdown("### Opción 1: Pregunta general")
-    pregunta_general = st.text_area(
-        "Haz una pregunta sobre mitología latinoamericana:",
-        placeholder="Ej: ¿Qué mitos hablan sobre espíritus del agua?",
-        height=100
-    )
-    
-    if st.button("🚀 Consultar", key="btn_general"):
-        if pregunta_general:
-            with st.spinner(f"Consultando {modelo_groq}..."):
-                respuesta = consultar_groq(pregunta_general, "", modelo_groq)
-            st.success("✅ Respuesta de la IA:")
-            st.write(respuesta)
-        else:
-            st.warning("⚠️ Por favor escribe una pregunta")
-    
-    st.divider()
-    
-    # Opción 2: Pregunta sobre un mito específico
-    st.markdown("### Opción 2: Pregunta sobre un mito específico")
-    
-    # Selector de mito
-    mito_seleccionado = st.selectbox(
-        "Selecciona un mito:",
-        df_artefactos["titulo"].unique()
-    )
-    
-    # Mostrar info del mito seleccionado
-    mito_info = df_artefactos[df_artefactos["titulo"] == mito_seleccionado].iloc[0]
-    
-    with st.expander("📜 Ver información del mito"):
-        st.write(f"**País:** {mito_info['pais']}")
-        st.write(f"**Región:** {mito_info['region']}")
-        st.write(f"**Temas:** {mito_info['temas_top3_str']}")
-        st.write(f"**Texto:** {mito_info['texto'][:300]}...")
-    
-    pregunta_especifica = st.text_area(
-        f"Haz una pregunta sobre '{mito_seleccionado}':",
-        placeholder="Ej: ¿Qué simboliza este mito? ¿Cuál es su origen?",
-        height=100
-    )
-    
-    if st.button("🚀 Consultar sobre este mito", key="btn_especifico"):
-        if pregunta_especifica:
-            # Preparar contexto completo del mito
-            contexto = f"""
-Título: {mito_info['titulo']}
-País: {mito_info['pais']}
-Región: {mito_info['region']}
-Temas: {mito_info['temas_top3_str']}
-
-Texto completo:
-{mito_info['texto']}
-"""
-            with st.spinner(f"Consultando {modelo_groq}..."):
-                respuesta = consultar_groq(pregunta_especifica, contexto, modelo_groq)
+    if not GROQ_AVAILABLE:
+        st.error("❌ Para usar esta función necesitas configurar tu API key de Groq en Settings > Secrets")
+        st.code('GROQ_API_KEY = "tu_clave_aqui"')
+    else:
+        st.info("✨ Selecciona un mito y modernízalo manteniendo su esencia cultural")
+        
+        # Selector de modelo
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            # Selector de mito por país
+            pais_seleccionado = st.selectbox(
+                "1️⃣ Selecciona el país:",
+                sorted(df["pais"].unique())
+            )
+        
+        with col2:
+            modelo_groq = st.selectbox(
+                "Modelo:",
+                ["llama-3.3-70b-versatile", "llama-3.1-70b-versatile", "llama-3.1-8b-instant"],
+                help="Llama 3.3 70B es el más potente"
+            )
+        
+        # Filtrar mitos por país
+        mitos_pais = df[df["pais"] == pais_seleccionado]["titulo"].unique()
+        
+        mito_seleccionado = st.selectbox(
+            "2️⃣ Selecciona el mito a modernizar:",
+            mitos_pais
+        )
+        
+        # Obtener datos completos del mito
+        mito_data = df[df["titulo"] == mito_seleccionado].iloc[0].to_dict()
+        
+        # Mostrar mito original
+        with st.expander("📜 Ver mito original", expanded=True):
+            st.write(f"**Título:** {mito_data['titulo']}")
+            st.write(f"**País:** {mito_data['pais']}")
+            st.write(f"**Región:** {mito_data['region'] if mito_data['region'] else 'No especificada'}")
+            st.write(f"**ID:** {mito_data['id']}")
+            st.divider()
+            st.write("**Texto original:**")
+            st.write(mito_data['texto'])
+        
+        # Botón para modernizar
+        if st.button("🚀 Modernizar mito", type="primary", use_container_width=True):
+            with st.spinner(f"✨ Modernizando '{mito_seleccionado}' con {modelo_groq}..."):
+                version_moderna = modernizar_mito(mito_data, modelo_groq)
             
-            st.success("✅ Respuesta de la IA:")
-            st.write(respuesta)
-        else:
-            st.warning("⚠️ Por favor escribe una pregunta")
+            st.success("✅ ¡Mito modernizado exitosamente!")
+            
+            # Mostrar versión modernizada
+            st.subheader("📖 Versión Modernizada")
+            st.write(version_moderna)
+            
+            # Botones de descarga y compartir
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                # Crear JSON con ambas versiones
+                resultado_completo = {
+                    "titulo_original": mito_data["titulo"],
+                    "pais": mito_data["pais"],
+                    "region": mito_data["region"],
+                    "id": mito_data["id"],
+                    "texto_original": mito_data["texto"],
+                    "texto_modernizado": version_moderna,
+                    "modelo_usado": modelo_groq
+                }
+                
+                json_descarga = json.dumps(resultado_completo, ensure_ascii=False, indent=4)
+                
+                st.download_button(
+                    label="💾 Descargar JSON",
+                    data=json_descarga,
+                    file_name=f"mito_modernizado_{mito_data['id']}.json",
+                    mime="application/json"
+                )
+            
+            with col2:
+                # Descargar como texto plano
+                texto_descarga = f"""MITO MODERNIZADO
+================
+
+Título Original: {mito_data['titulo']}
+País: {mito_data['pais']}
+Región: {mito_data['region']}
+ID: {mito_data['id']}
+
+VERSIÓN ORIGINAL:
+{mito_data['texto']}
+
+---
+
+VERSIÓN MODERNIZADA:
+{version_moderna}
+
+---
+Generado con: {modelo_groq}
+"""
+                st.download_button(
+                    label="📄 Descargar TXT",
+                    data=texto_descarga,
+                    file_name=f"mito_modernizado_{mito_data['id']}.txt",
+                    mime="text/plain"
+                )
 
 # --- TAB 3: Encuesta ---
 with tabs[2]:
     st.subheader("Encuesta de preferencias")
-
     nombre = st.text_input("Nombre")
     edad = st.number_input("Edad", min_value=5, max_value=120, step=1)
     pais = st.selectbox("País de origen", 
@@ -328,7 +351,8 @@ with tabs[1]:
     st.subheader("Explora los mitos y leyendas por país")
     pais_explorar = st.selectbox(
         "Selecciona un país para explorar sus mitos",
-        sorted(df["pais"].unique())
+        sorted(df["pais"].unique()),
+        key="explorar_pais"
     )
     df_filtrado = df[df["pais"] == pais_explorar]
     if not df_filtrado.empty:
@@ -343,10 +367,9 @@ with tabs[1]:
 with tabs[0]:
     st.subheader("Buscar mitos por temática o descripción")
     query = st.text_input("Escribe una palabra o tema (ej: 'espíritus', 'agua', 'rituales')")
-    query = query.lower()
-    if st.button("Buscar"):
+    if st.button("Buscar", key="buscar_btn"):
         if query.strip():
-            resultados = buscar_mitos_por_texto(query, top_k=5)
+            resultados = buscar_mitos_por_texto(query.lower(), top_k=5)
             if resultados.empty:
                 st.warning("No se encontraron mitos relacionados.")
             else:
