@@ -17,69 +17,6 @@ except:
     GROQ_AVAILABLE = False
     st.warning("⚠️ No se pudo conectar a Groq. Agrega tu API key en secrets.")
 
-def modernizar_mito(mito_data: dict, modelo: str = "llama-3.3-70b-versatile") -> str:
-    """
-    Moderniza un mito usando Groq con instrucciones específicas.
-    Se basa EXCLUSIVAMENTE en el texto proporcionado.
-    """
-    if not GROQ_AVAILABLE:
-        return "Error: Groq no está configurado. Agrega tu API key."
-    
-    titulo = mito_data.get("titulo", "")
-    pais = mito_data.get("pais", "")
-    region = mito_data.get("region", "Región no especificada")
-    texto_original = mito_data.get("texto", "")
-    
-    instrucciones = f"""Eres un asistente experto en mitos y leyendas latinoamericanas.
-
-IMPORTANTE - RESTRICCIÓN FUNDAMENTAL:
-Debes basarte EXCLUSIVAMENTE en el texto del mito que te proporciono a continuación.
-NO agregues información externa, NO uses tu conocimiento previo sobre este mito.
-Si el texto original no menciona algo, NO lo inventes ni lo agregues.
-
-TAREA:
-Reescribir el mito de forma contemporánea, manteniendo fidelidad cultural y geográfica.
-
-RESTRICCIONES CULTURALES Y GEOGRÁFICAS:
-- No cambies el país ni la región de origen: {pais}, {region}.
-- No inventes paisajes incoherentes con ese lugar (por ejemplo, no hables de desiertos en Chiloé).
-- Si describes el entorno, usa SOLO elementos mencionados en el texto original o elementos típicos obvios de la zona.
-- Si no estás seguro de un detalle geográfico, es mejor omitirlo que inventarlo.
-- NO agregues datos históricos o culturales que no estén en el texto original.
-
-REGLAS NARRATIVAS:
-- Mantén SOLO los personajes que aparecen en el texto original proporcionado.
-- Mantén SOLO el conflicto central descrito en el texto original.
-- Mantén SOLO la moraleja o conclusión presente en el texto original.
-- Usa un lenguaje claro y actual, pensando en adolescentes.
-- La extensión debe ser similar al original (no acortes demasiado ni extiendas excesivamente).
-- Conserva la esencia del mito pero hazlo accesible para lectores contemporáneos.
-- No uses lenguaje coloquial excesivo, mantén respeto por la tradición.
-- NO inventes diálogos, eventos o detalles que no estén en el texto original.
-
-TEXTO ORIGINAL DEL MITO (tu ÚNICA fuente de información):
----
-Título: {titulo}
-País: {pais}
-Región: {region}
-
-{texto_original}
----
-
-Ahora reescribe SOLO lo que está en el texto anterior, modernizando el lenguaje pero sin agregar información nueva.
-No uses frases como "según la leyenda" o "se dice que" - escribe directamente la historia modernizada.
-Escribe la versión modernizada:"""
-    
-    try:
-        completion = groq_client.chat.completions.create(
-            model=modelo,
-            messages=[{"role": "user", "content": instrucciones}],
-            temperature=0.5,
-            max_tokens=2048,
-        )
-        return completion.choices[0].message.content
-    except Exception as e:
-        return f"Error al consultar Groq: {str(e)}"
 
 # 🔹 NUEVA FUNCIÓN: Crear mito con prompt personalizado
 def crear_mito_personalizado(mito_data: dict, prompt_usuario: str, modelo: str = "llama-3.3-70b-versatile") -> str:
