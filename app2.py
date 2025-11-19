@@ -442,8 +442,6 @@ Longitud preferida: {longitud_preferida}
 # --- TAB 3: Encuesta (sin cambios) ---
 with tabs[2]:
     st.subheader("Encuesta de preferencias")
-    nombre = st.text_input("Nombre")
-    edad = st.number_input("Edad", min_value=5, max_value=120, step=1)
     pais = st.selectbox("País de origen", 
                         ["Argentina","Bolivia","Chile","Colombia","Ecuador","México","Perú","Uruguay"],
                         key="encuesta_pais")
@@ -466,8 +464,6 @@ with tabs[2]:
             st.success(f"Gracias {nombre}, tus datos fueron registrados.")
             st.write(f"""
             **Resumen de tus respuestas:**
-            - Edad: {edad}
-            - País: {pais}
             - Mito favorito: {mito_favorito}
             """)
             st.divider()
