@@ -307,7 +307,6 @@ with tabs[4]:
             **Ejemplos creativos:**
             - "Reescribe el mito en forma de diálogo entre los personajes principales"
             - "Adapta el mito al contexto urbano moderno, pero manteniendo la moraleja original"
-            - "Escribe el mito como si fuera un guión de película, con indicaciones de escenas"
             
             **Ejemplos educativos:**
             - "Reescribe el mito destacando los valores morales y explicándolos claramente"
