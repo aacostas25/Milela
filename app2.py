@@ -460,31 +460,22 @@ with tabs[2]:
     mito_favorito = st.selectbox("Mito o leyenda favorita", mitos_por_pais[pais])
 
     if st.button("Enviar", key="btn_encuesta"):
-        if nombre:
-            st.success(f"Gracias {nombre}, tus datos fueron registrados.")
-            st.write(f"""
-            **Resumen de tus respuestas:**
-            - Mito favorito: {mito_favorito}
-            """)
-            st.divider()
-            st.subheader("✨ Recomendaciones similares a tu mito favorito:")
-            match = df_artefactos[df_artefactos["titulo"].str.lower() == mito_favorito.lower()]
-            if not match.empty:
-                mito_id = match.iloc[0]["id"]
-                recomendaciones = recommend_similar_to_item(item_id=mito_id, top_k=5)
-            else:
-                recomendaciones = pd.DataFrame()
-        
-            if recomendaciones.empty:
-                st.info("No se encontraron mitos similares en la base de datos.")
-            else:
-                for _, row in recomendaciones.iterrows():
-                    with st.expander(f"📜 {row['titulo']} ({row['pais']}) – Similitud: {row['sim_sem']:.3f}"):
-                        st.write(f"**Temas:** {row['temas_top3_str']}")
-                        st.write(f"**Región:** {row['region']}")
-                        st.write(row['texto'])
+        st.subheader("✨ Recomendaciones similares a tu mito favorito:")
+        match = df_artefactos[df_artefactos["titulo"].str.lower() == mito_favorito.lower()]
+        if not match.empty:
+            mito_id = match.iloc[0]["id"]
+            recomendaciones = recommend_similar_to_item(item_id=mito_id, top_k=5)
         else:
-            st.warning("Por favor, ingresa tu nombre antes de enviar.")
+            recomendaciones = pd.DataFrame()
+        
+        if recomendaciones.empty:
+            st.info("No se encontraron mitos similares en la base de datos.")
+        else:
+            for _, row in recomendaciones.iterrows():
+                with st.expander(f"📜 {row['titulo']} ({row['pais']}) – Similitud: {row['sim_sem']:.3f}"):
+                    st.write(f"**Temas:** {row['temas_top3_str']}")
+                    st.write(f"**Región:** {row['region']}")
+                    st.write(row['texto'])
 
 # --- TAB 2: Exploración (sin cambios) ---
 with tabs[1]:
