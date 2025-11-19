@@ -7,6 +7,7 @@ from sklearn.preprocessing import normalize
 from typing import List, Optional, Iterable
 from groq import Groq
 from PIL import Image
+from streamlit.locale import gettext as _
 # ======================
 # Configuración de Groq
 # ======================
