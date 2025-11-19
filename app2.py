@@ -243,8 +243,7 @@ tabs = st.tabs([
     "🔍 Buscar por temática",
     "📖 Explorar mitos por país",
     "📋 Encuesta de preferencias",
-    "🤖 Modernizar mito",
-    "✨ Crea tu mito"  # 🔹 NUEVA PESTAÑA
+    "✨ Modernizar mito"  # 🔹 NUEVA PESTAÑA
 ])
 
 # 🔹 --- TAB 5: Crea tu mito ---
