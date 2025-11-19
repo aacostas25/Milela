@@ -414,7 +414,7 @@ with tabs[2]:
             st.info("No se encontraron mitos similares en la base de datos.")
         else:
             for _, row in recomendaciones.iterrows():
-                with st.expander(f"📜 {row['titulo']} ({row['pais']}) – Similitud: {row['sim_sem']:.3f}"):
+                with st.expander(f"📜 {row['titulo']} ({row['pais']}) – Similitud: {row['score']:.3f}"):
                     st.write(f"**Temas:** {row['temas_top3_str']}")
                     st.write(f"**Región:** {row['region']}")
                     st.write(row['texto'])
