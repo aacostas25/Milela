@@ -441,7 +441,7 @@ Longitud preferida: {longitud_preferida}
 
 # --- TAB 3: Encuesta (sin cambios) ---
 with tabs[2]:
-    st.subheader("Recomendador mito")
+    st.subheader("Recomendar mito")
     pais = st.selectbox("País de origen", 
                         ["Argentina","Bolivia","Chile","Colombia","Ecuador","México","Perú","Uruguay"],
                         key="encuesta_pais")
