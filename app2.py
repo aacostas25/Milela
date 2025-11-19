@@ -242,8 +242,8 @@ Permite explorar, buscar y descubrir historias de toda la región.
 tabs = st.tabs([
     "🔍 Buscar por temática",
     "📖 Explorar mitos por país",
-    "📋 Encuesta de preferencias",
-    "✨ Modernizar mito"  # 🔹 NUEVA PESTAÑA
+    "📋 Recomendar mitos",
+    "✨ Modernizar mito" 
 ])
 
 # 🔹 --- TAB 5: Crea tu mito ---
