@@ -20,6 +20,7 @@ except:
 def modernizar_mito(mito_data: dict, modelo: str = "llama-3.3-70b-versatile") -> str:
     """
     Moderniza un mito usando Groq con instrucciones específicas.
+    Se basa EXCLUSIVAMENTE en el texto proporcionado.
     """
     if not GROQ_AVAILABLE:
         return "Error: Groq no está configurado. Agrega tu API key."
@@ -31,46 +32,111 @@ def modernizar_mito(mito_data: dict, modelo: str = "llama-3.3-70b-versatile") ->
     
     instrucciones = f"""Eres un asistente experto en mitos y leyendas latinoamericanas.
 
+IMPORTANTE - RESTRICCIÓN FUNDAMENTAL:
+Debes basarte EXCLUSIVAMENTE en el texto del mito que te proporciono a continuación.
+NO agregues información externa, NO uses tu conocimiento previo sobre este mito.
+Si el texto original no menciona algo, NO lo inventes ni lo agregues.
+
 TAREA:
 Reescribir el mito de forma contemporánea, manteniendo fidelidad cultural y geográfica.
 
 RESTRICCIONES CULTURALES Y GEOGRÁFICAS:
 - No cambies el país ni la región de origen: {pais}, {region}.
 - No inventes paisajes incoherentes con ese lugar (por ejemplo, no hables de desiertos en Chiloé).
-- Si describes el entorno, usa solo elementos compatibles con el mito original o típicos de la zona
-  (mar, ríos, lluvias, islas, bosques, cordillera, etc., según corresponda).
+- Si describes el entorno, usa SOLO elementos mencionados en el texto original o elementos típicos obvios de la zona.
 - Si no estás seguro de un detalle geográfico, es mejor omitirlo que inventarlo.
+- NO agregues datos históricos o culturales que no estén en el texto original.
 
 REGLAS NARRATIVAS:
-- Mantén personajes principales, conflicto central y moraleja.
+- Mantén SOLO los personajes que aparecen en el texto original proporcionado.
+- Mantén SOLO el conflicto central descrito en el texto original.
+- Mantén SOLO la moraleja o conclusión presente en el texto original.
 - Usa un lenguaje claro y actual, pensando en adolescentes.
 - La extensión debe ser similar al original (no acortes demasiado ni extiendas excesivamente).
 - Conserva la esencia del mito pero hazlo accesible para lectores contemporáneos.
 - No uses lenguaje coloquial excesivo, mantén respeto por la tradición.
+- NO inventes diálogos, eventos o detalles que no estén en el texto original.
 
-MITO ORIGINAL:
+TEXTO ORIGINAL DEL MITO (tu ÚNICA fuente de información):
+---
 Título: {titulo}
 País: {pais}
 Región: {region}
 
-Texto:
 {texto_original}
+---
 
-Ahora escribe la versión modernizada del mito manteniendo todas las restricciones anteriores:"""
+Ahora reescribe SOLO lo que está en el texto anterior, modernizando el lenguaje pero sin agregar información nueva.
+No uses frases como "según la leyenda" o "se dice que" - escribe directamente la historia modernizada.
+Escribe la versión modernizada:"""
     
     try:
         completion = groq_client.chat.completions.create(
             model=modelo,
             messages=[{"role": "user", "content": instrucciones}],
-            temperature=0.7,
-            max_tokens=2048,  # Aumentado para mitos más largos
+            temperature=0.5,
+            max_tokens=2048,
+        )
+        return completion.choices[0].message.content
+    except Exception as e:
+        return f"Error al consultar Groq: {str(e)}"
+
+# 🔹 NUEVA FUNCIÓN: Crear mito con prompt personalizado
+def crear_mito_personalizado(mito_data: dict, prompt_usuario: str, modelo: str = "llama-3.3-70b-versatile") -> str:
+    """
+    Crea versión personalizada del mito basándose en instrucciones del usuario.
+    Se basa EXCLUSIVAMENTE en el texto proporcionado.
+    """
+    if not GROQ_AVAILABLE:
+        return "Error: Groq no está configurado. Agrega tu API key."
+    
+    titulo = mito_data.get("titulo", "")
+    pais = mito_data.get("pais", "")
+    region = mito_data.get("region", "Región no especificada")
+    texto_original = mito_data.get("texto", "")
+    
+    instrucciones = f"""Eres un asistente experto en mitos y leyendas latinoamericanas.
+
+RESTRICCIÓN FUNDAMENTAL:
+Debes basarte EXCLUSIVAMENTE en el texto del mito que te proporciono.
+NO agregues información que no esté en el texto original.
+NO uses tu conocimiento previo sobre este mito.
+
+INFORMACIÓN DEL MITO ORIGINAL:
+---
+Título: {titulo}
+País: {pais}
+Región: {region}
+
+Texto original:
+{texto_original}
+---
+
+INSTRUCCIONES DEL USUARIO:
+{prompt_usuario}
+
+REGLAS IMPORTANTES:
+1. Respeta el país y región de origen: {pais}, {region}
+2. No inventes elementos geográficos incoherentes con la ubicación
+3. Usa SOLO información presente en el texto original
+4. Si el usuario pide algo que contradice el texto original, prioriza la fidelidad al mito
+5. Si el usuario pide agregar elementos no mencionados, explica que no están en el original
+
+Ahora crea la versión del mito siguiendo las instrucciones del usuario:"""
+    
+    try:
+        completion = groq_client.chat.completions.create(
+            model=modelo,
+            messages=[{"role": "user", "content": instrucciones}],
+            temperature=0.6,  # Un poco más de creatividad que la versión estándar
+            max_tokens=2048,
         )
         return completion.choices[0].message.content
     except Exception as e:
         return f"Error al consultar Groq: {str(e)}"
 
 # ======================
-# Carga de datos
+# Carga de datos (sin cambios)
 # ======================
 @st.cache_data
 def load_country_jsons(data_dir):
@@ -96,9 +162,6 @@ def load_country_jsons(data_dir):
 DATA_DIR = "InfoCompleta"
 df = load_country_jsons(DATA_DIR)
 
-# ======================
-# Carga artefactos y modelo
-# ======================
 @st.cache_resource
 def load_artifacts():
     df_artefactos = pd.read_json("milela_enriquecido.json", encoding="utf-8")
@@ -116,9 +179,6 @@ def load_sbert_model():
 
 sbert = load_sbert_model()
 
-# ======================
-# Funciones existentes (búsqueda, recomendación, etc.)
-# ======================
 def buscar_mitos_por_texto(query, top_k=5):
     qv = sbert.encode([query], convert_to_numpy=True).astype("float32")
     qv = normalize(qv, norm="l2", axis=1)
@@ -183,10 +243,205 @@ tabs = st.tabs([
     "🔍 Buscar por temática",
     "📖 Explorar mitos por país",
     "📋 Encuesta de preferencias",
-    "🤖 Modernizar mito con IA"  # 🔹 NUEVA PESTAÑA
+    "🤖 Modernizar mito",
+    "✨ Crea tu mito"  # 🔹 NUEVA PESTAÑA
 ])
 
-# --- TAB 4: Modernizar mito ---
+# 🔹 --- TAB 5: Crea tu mito ---
+with tabs[4]:
+    st.subheader("✨ Crea tu versión personalizada de un mito")
+    
+    if not GROQ_AVAILABLE:
+        st.error("❌ Para usar esta función necesitas configurar tu API key de Groq en Settings > Secrets")
+        st.code('GROQ_API_KEY = "tu_clave_aqui"')
+    else:
+        st.info("🎨 Selecciona un mito y escribe tus propias instrucciones para crear una versión personalizada")
+        
+        # Selector de modelo
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            pais_seleccionado_crear = st.selectbox(
+                "1️⃣ Selecciona el país:",
+                sorted(df["pais"].unique()),
+                key="crear_pais"
+            )
+        
+        with col2:
+            modelo_groq_crear = st.selectbox(
+                "Modelo:",
+                ["llama-3.3-70b-versatile", "llama-3.1-70b-versatile", "llama-3.1-8b-instant"],
+                key="crear_modelo",
+                help="Llama 3.3 70B es el más potente"
+            )
+        
+        # Filtrar mitos por país
+        mitos_pais_crear = df[df["pais"] == pais_seleccionado_crear]["titulo"].unique()
+        
+        mito_seleccionado_crear = st.selectbox(
+            "2️⃣ Selecciona el mito base:",
+            mitos_pais_crear,
+            key="crear_mito"
+        )
+        
+        # Obtener datos completos del mito
+        mito_data_crear = df[df["titulo"] == mito_seleccionado_crear].iloc[0].to_dict()
+        
+        # Mostrar mito original
+        with st.expander("📜 Ver mito original"):
+            st.write(f"**Título:** {mito_data_crear['titulo']}")
+            st.write(f"**País:** {mito_data_crear['pais']}")
+            st.write(f"**Región:** {mito_data_crear['region'] if mito_data_crear['region'] else 'No especificada'}")
+            st.divider()
+            st.write(mito_data_crear['texto'])
+        
+        st.markdown("### 3️⃣ Escribe tus instrucciones personalizadas")
+        
+        # Ejemplos predefinidos
+        with st.expander("💡 Ver ejemplos de instrucciones"):
+            st.markdown("""
+            **Ejemplos para profesores:**
+            - "Reescribe el mito como si fuera una noticia de periódico actual, manteniendo los eventos principales"
+            - "Adapta el mito para niños de 8-10 años, usando un lenguaje muy simple y añadiendo descripciones visuales"
+            - "Cuenta el mito desde el punto de vista de uno de los personajes secundarios"
+            
+            **Ejemplos creativos:**
+            - "Reescribe el mito en forma de diálogo entre los personajes principales"
+            - "Adapta el mito al contexto urbano moderno, pero manteniendo la moraleja original"
+            - "Escribe el mito como si fuera un guión de película, con indicaciones de escenas"
+            
+            **Ejemplos educativos:**
+            - "Reescribe el mito destacando los valores morales y explicándolos claramente"
+            - "Adapta el mito para enseñar sobre la importancia del respeto a la naturaleza"
+            - "Escribe el mito en formato de preguntas y respuestas para comprensión lectora"
+            """)
+        
+        # Campo de texto para instrucciones personalizadas
+        prompt_personalizado = st.text_area(
+            "Escribe tus instrucciones aquí:",
+            height=150,
+            placeholder="Ejemplo: Reescribe el mito como una carta que el personaje principal le escribe a su familia contando lo que vivió...",
+            help="Sé específico sobre qué quieres: estilo, formato, público objetivo, elementos a destacar, etc."
+        )
+        
+        # Opciones adicionales
+        col1, col2 = st.columns(2)
+        with col1:
+            incluir_original = st.checkbox("Mostrar texto original junto a la versión personalizada", value=True)
+        with col2:
+            longitud_preferida = st.select_slider(
+                "Longitud aproximada:",
+                options=["Muy breve", "Breve", "Similar al original", "Extendida", "Muy detallada"],
+                value="Similar al original"
+            )
+        
+        # Agregar longitud al prompt si el usuario la seleccionó
+        if longitud_preferida != "Similar al original":
+            prompt_con_longitud = f"{prompt_personalizado}\n\nLongitud deseada: {longitud_preferida}"
+        else:
+            prompt_con_longitud = prompt_personalizado
+        
+        # Botón para generar
+        if st.button("🚀 Generar versión personalizada", type="primary", use_container_width=True, key="btn_crear"):
+            if not prompt_personalizado.strip():
+                st.warning("⚠️ Por favor escribe tus instrucciones antes de generar")
+            else:
+                with st.spinner(f"✨ Creando versión personalizada de '{mito_seleccionado_crear}'..."):
+                    version_personalizada = crear_mito_personalizado(
+                        mito_data_crear, 
+                        prompt_con_longitud, 
+                        modelo_groq_crear
+                    )
+                
+                st.success("✅ ¡Versión personalizada creada exitosamente!")
+                
+                # Mostrar resultados
+                if incluir_original:
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.subheader("📜 Versión Original")
+                        st.write(mito_data_crear['texto'])
+                    with col2:
+                        st.subheader("✨ Versión Personalizada")
+                        st.write(version_personalizada)
+                else:
+                    st.subheader("✨ Versión Personalizada")
+                    st.write(version_personalizada)
+                
+                st.divider()
+                
+                # Botones de descarga
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    # Descargar JSON completo
+                    resultado_completo = {
+                        "titulo_original": mito_data_crear["titulo"],
+                        "pais": mito_data_crear["pais"],
+                        "region": mito_data_crear["region"],
+                        "id": mito_data_crear["id"],
+                        "texto_original": mito_data_crear["texto"],
+                        "instrucciones_usuario": prompt_personalizado,
+                        "texto_personalizado": version_personalizada,
+                        "modelo_usado": modelo_groq_crear,
+                        "longitud_preferida": longitud_preferida
+                    }
+                    
+                    json_descarga = json.dumps(resultado_completo, ensure_ascii=False, indent=4)
+                    
+                    st.download_button(
+                        label="💾 Descargar JSON",
+                        data=json_descarga,
+                        file_name=f"mito_personalizado_{mito_data_crear['id']}.json",
+                        mime="application/json",
+                        key="download_json_crear"
+                    )
+                
+                with col2:
+                    # Descargar solo versión personalizada (TXT)
+                    st.download_button(
+                        label="📄 Descargar versión personalizada (TXT)",
+                        data=version_personalizada,
+                        file_name=f"mito_personalizado_{mito_data_crear['id']}.txt",
+                        mime="text/plain",
+                        key="download_txt_crear"
+                    )
+                
+                with col3:
+                    # Descargar comparación completa
+                    texto_comparacion = f"""VERSIÓN PERSONALIZADA DEL MITO
+================================
+
+Título Original: {mito_data_crear['titulo']}
+País: {mito_data_crear['pais']}
+Región: {mito_data_crear['region']}
+ID: {mito_data_crear['id']}
+
+INSTRUCCIONES DEL USUARIO:
+{prompt_personalizado}
+
+---
+
+VERSIÓN ORIGINAL:
+{mito_data_crear['texto']}
+
+---
+
+VERSIÓN PERSONALIZADA:
+{version_personalizada}
+
+---
+Generado con: {modelo_groq_crear}
+Longitud preferida: {longitud_preferida}
+"""
+                    st.download_button(
+                        label="📋 Descargar comparación completa",
+                        data=texto_comparacion,
+                        file_name=f"comparacion_{mito_data_crear['id']}.txt",
+                        mime="text/plain",
+                        key="download_comparacion"
+                    )
+
+# --- TAB 4: Modernizar mito (sin cambios) ---
 with tabs[3]:
     st.subheader("🤖 Moderniza un mito usando IA")
     
@@ -196,34 +451,32 @@ with tabs[3]:
     else:
         st.info("✨ Selecciona un mito y modernízalo manteniendo su esencia cultural")
         
-        # Selector de modelo
         col1, col2 = st.columns([3, 1])
         with col1:
-            # Selector de mito por país
             pais_seleccionado = st.selectbox(
                 "1️⃣ Selecciona el país:",
-                sorted(df["pais"].unique())
+                sorted(df["pais"].unique()),
+                key="modernizar_pais"
             )
         
         with col2:
             modelo_groq = st.selectbox(
                 "Modelo:",
                 ["llama-3.3-70b-versatile", "llama-3.1-70b-versatile", "llama-3.1-8b-instant"],
+                key="modernizar_modelo",
                 help="Llama 3.3 70B es el más potente"
             )
         
-        # Filtrar mitos por país
         mitos_pais = df[df["pais"] == pais_seleccionado]["titulo"].unique()
         
         mito_seleccionado = st.selectbox(
             "2️⃣ Selecciona el mito a modernizar:",
-            mitos_pais
+            mitos_pais,
+            key="modernizar_mito"
         )
         
-        # Obtener datos completos del mito
         mito_data = df[df["titulo"] == mito_seleccionado].iloc[0].to_dict()
         
-        # Mostrar mito original
         with st.expander("📜 Ver mito original", expanded=True):
             st.write(f"**Título:** {mito_data['titulo']}")
             st.write(f"**País:** {mito_data['pais']}")
@@ -233,22 +486,18 @@ with tabs[3]:
             st.write("**Texto original:**")
             st.write(mito_data['texto'])
         
-        # Botón para modernizar
-        if st.button("🚀 Modernizar mito", type="primary", use_container_width=True):
+        if st.button("🚀 Modernizar mito", type="primary", use_container_width=True, key="btn_modernizar"):
             with st.spinner(f"✨ Modernizando '{mito_seleccionado}' con {modelo_groq}..."):
                 version_moderna = modernizar_mito(mito_data, modelo_groq)
             
             st.success("✅ ¡Mito modernizado exitosamente!")
             
-            # Mostrar versión modernizada
             st.subheader("📖 Versión Modernizada")
             st.write(version_moderna)
             
-            # Botones de descarga y compartir
             col1, col2 = st.columns(2)
             
             with col1:
-                # Crear JSON con ambas versiones
                 resultado_completo = {
                     "titulo_original": mito_data["titulo"],
                     "pais": mito_data["pais"],
@@ -265,11 +514,11 @@ with tabs[3]:
                     label="💾 Descargar JSON",
                     data=json_descarga,
                     file_name=f"mito_modernizado_{mito_data['id']}.json",
-                    mime="application/json"
+                    mime="application/json",
+                    key="download_json_modernizar"
                 )
             
             with col2:
-                # Descargar como texto plano
                 texto_descarga = f"""MITO MODERNIZADO
 ================
 
@@ -293,16 +542,18 @@ Generado con: {modelo_groq}
                     label="📄 Descargar TXT",
                     data=texto_descarga,
                     file_name=f"mito_modernizado_{mito_data['id']}.txt",
-                    mime="text/plain"
+                    mime="text/plain",
+                    key="download_txt_modernizar"
                 )
 
-# --- TAB 3: Encuesta ---
+# --- TAB 3: Encuesta (sin cambios) ---
 with tabs[2]:
     st.subheader("Encuesta de preferencias")
     nombre = st.text_input("Nombre")
     edad = st.number_input("Edad", min_value=5, max_value=120, step=1)
     pais = st.selectbox("País de origen", 
-                        ["Argentina","Bolivia","Chile","Colombia","Ecuador","México","Perú","Uruguay"])
+                        ["Argentina","Bolivia","Chile","Colombia","Ecuador","México","Perú","Uruguay"],
+                        key="encuesta_pais")
 
     mitos_por_pais = {
         "Argentina": ["El Familiar", "Luz Mala", "Pombero"],
@@ -317,7 +568,7 @@ with tabs[2]:
 
     mito_favorito = st.selectbox("Mito o leyenda favorita", mitos_por_pais[pais])
 
-    if st.button("Enviar"):
+    if st.button("Enviar", key="btn_encuesta"):
         if nombre:
             st.success(f"Gracias {nombre}, tus datos fueron registrados.")
             st.write(f"""
@@ -346,7 +597,7 @@ with tabs[2]:
         else:
             st.warning("Por favor, ingresa tu nombre antes de enviar.")
 
-# --- TAB 2: Exploración ---
+# --- TAB 2: Exploración (sin cambios) ---
 with tabs[1]:
     st.subheader("Explora los mitos y leyendas por país")
     pais_explorar = st.selectbox(
@@ -363,7 +614,7 @@ with tabs[1]:
     else:
         st.info("No hay mitos disponibles para este país.")
 
-# --- TAB 1: Buscador ---
+# --- TAB 1: Buscador (sin cambios) ---
 with tabs[0]:
     st.subheader("Buscar mitos por temática o descripción")
     query = st.text_input("Escribe una palabra o tema (ej: 'espíritus', 'agua', 'rituales')")
