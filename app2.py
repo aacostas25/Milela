@@ -248,7 +248,7 @@ tabs = st.tabs([
 ])
 
 # 🔹 --- TAB 5: Crea tu mito ---
-with tabs[4]:
+with tabs[3]:
     st.subheader("✨ Crea tu versión personalizada de un mito")
     
     if not GROQ_AVAILABLE:
@@ -439,111 +439,6 @@ Longitud preferida: {longitud_preferida}
                         mime="text/plain",
                         key="download_comparacion"
                     )
-
-# --- TAB 4: Modernizar mito (sin cambios) ---
-with tabs[3]:
-    st.subheader("🤖 Moderniza un mito usando IA")
-    
-    if not GROQ_AVAILABLE:
-        st.error("❌ Para usar esta función necesitas configurar tu API key de Groq en Settings > Secrets")
-        st.code('GROQ_API_KEY = "tu_clave_aqui"')
-    else:
-        st.info("✨ Selecciona un mito y modernízalo manteniendo su esencia cultural")
-        
-        col1, col2 = st.columns([3, 1])
-        with col1:
-            pais_seleccionado = st.selectbox(
-                "1️⃣ Selecciona el país:",
-                sorted(df["pais"].unique()),
-                key="modernizar_pais"
-            )
-        
-        with col2:
-            modelo_groq = st.selectbox(
-                "Modelo:",
-                ["llama-3.3-70b-versatile", "llama-3.1-70b-versatile", "llama-3.1-8b-instant"],
-                key="modernizar_modelo",
-                help="Llama 3.3 70B es el más potente"
-            )
-        
-        mitos_pais = df[df["pais"] == pais_seleccionado]["titulo"].unique()
-        
-        mito_seleccionado = st.selectbox(
-            "2️⃣ Selecciona el mito a modernizar:",
-            mitos_pais,
-            key="modernizar_mito"
-        )
-        
-        mito_data = df[df["titulo"] == mito_seleccionado].iloc[0].to_dict()
-        
-        with st.expander("📜 Ver mito original", expanded=True):
-            st.write(f"**Título:** {mito_data['titulo']}")
-            st.write(f"**País:** {mito_data['pais']}")
-            st.write(f"**Región:** {mito_data['region'] if mito_data['region'] else 'No especificada'}")
-            st.write(f"**ID:** {mito_data['id']}")
-            st.divider()
-            st.write("**Texto original:**")
-            st.write(mito_data['texto'])
-        
-        if st.button("🚀 Modernizar mito", type="primary", use_container_width=True, key="btn_modernizar"):
-            with st.spinner(f"✨ Modernizando '{mito_seleccionado}' con {modelo_groq}..."):
-                version_moderna = modernizar_mito(mito_data, modelo_groq)
-            
-            st.success("✅ ¡Mito modernizado exitosamente!")
-            
-            st.subheader("📖 Versión Modernizada")
-            st.write(version_moderna)
-            
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                resultado_completo = {
-                    "titulo_original": mito_data["titulo"],
-                    "pais": mito_data["pais"],
-                    "region": mito_data["region"],
-                    "id": mito_data["id"],
-                    "texto_original": mito_data["texto"],
-                    "texto_modernizado": version_moderna,
-                    "modelo_usado": modelo_groq
-                }
-                
-                json_descarga = json.dumps(resultado_completo, ensure_ascii=False, indent=4)
-                
-                st.download_button(
-                    label="💾 Descargar JSON",
-                    data=json_descarga,
-                    file_name=f"mito_modernizado_{mito_data['id']}.json",
-                    mime="application/json",
-                    key="download_json_modernizar"
-                )
-            
-            with col2:
-                texto_descarga = f"""MITO MODERNIZADO
-================
-
-Título Original: {mito_data['titulo']}
-País: {mito_data['pais']}
-Región: {mito_data['region']}
-ID: {mito_data['id']}
-
-VERSIÓN ORIGINAL:
-{mito_data['texto']}
-
----
-
-VERSIÓN MODERNIZADA:
-{version_moderna}
-
----
-Generado con: {modelo_groq}
-"""
-                st.download_button(
-                    label="📄 Descargar TXT",
-                    data=texto_descarga,
-                    file_name=f"mito_modernizado_{mito_data['id']}.txt",
-                    mime="text/plain",
-                    key="download_txt_modernizar"
-                )
 
 # --- TAB 3: Encuesta (sin cambios) ---
 with tabs[2]:
