@@ -281,12 +281,11 @@ with tabs[3]:
         st.warning("⚠️ **Importante**: Esta herramienta usa IA generativa. Lee las consideraciones éticas antes de usar.")
 
 # Expander con detalles completos
-        with st.expander("⚠️ **LEER ANTES DE USAR** - Consideraciones éticas y limitaciones"):
+        with st.expander("Consideraciones éticas y limitaciones"):
             st.markdown("""
-        Somos conscientes de que la modernización de contenido cultural mediante IA puede generar distorsiones, estereotipos o descontextualizaciones, 
-        especialmente en tradiciones con fuerte raíz oral y menor representación digital. 
-        Por ello, promovemos un uso responsable y transparente de esta herramienta, reconociendo sus limitaciones 
-        y comprometiéndonos a evitar apropiaciones indebidas que afecten la representación auténtica de las culturas y comunidades involucradas.""")
+            Un riesgo central de este proyecto tiene que ver con la distorsión cultural. Intervenir de manera incorrecta o superficial el conocimiento asociado a comunidades puede reforzar estereotipos, invisibilizar elementos identitarios o generar representaciones equivocadas que afectan la manera en que estas culturas son entendidas fuera de su propio contexto. Esto es especialmente sensible en el caso de tradiciones latinoamericanas con fuerte raíz oral y menor presencia en los corpus masivos de entrenamiento, lo que podría hacer que su representación en los LLMs sea más frágil o propensa a errores. 
+El proyecto trata de evitar apropiaciones indebidas o simplificaciones que descontextualicen dichos contenidos de su significado original. En conjunto, estas consideraciones orientan el proyecto hacia un enfoque responsable que reconoce las limitaciones de los LLMs, evita intervenciones que puedan afectar negativamente la representación cultural y promueve el uso seguro y transparente de la modernización de mitos. 
+""")
         # Botón para generar
         if st.button("🚀 Generar versión personalizada", type="primary", use_container_width=True, key="btn_crear"):
             if not prompt_personalizado.strip():
