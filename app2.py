@@ -211,8 +211,7 @@ with tabs[3]:
             modelo_groq_crear = st.selectbox(
                 "Modelo:",
                 ["llama-3.3-70b-versatile"],
-                key="crear_modelo",
-                help="Llama 3.3 70B es el más potente"
+                key="crear_modelo"
             )
         
         # Filtrar mitos por país
