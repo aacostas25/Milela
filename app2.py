@@ -278,7 +278,15 @@ with tabs[3]:
             prompt_con_longitud = f"{prompt_personalizado}\n\nLongitud deseada: {longitud_preferida}"
         else:
             prompt_con_longitud = prompt_personalizado
-        
+        st.warning("⚠️ **Importante**: Esta herramienta usa IA generativa. Lee las consideraciones éticas antes de usar.")
+
+# Expander con detalles completos
+        with st.expander("⚠️ **LEER ANTES DE USAR** - Consideraciones éticas y limitaciones"):
+            st.markdown("""
+        Somos conscientes de que la modernización de contenido cultural mediante IA puede generar distorsiones, estereotipos o descontextualizaciones, 
+        especialmente en tradiciones con fuerte raíz oral y menor representación digital. 
+        Por ello, promovemos un uso responsable y transparente de esta herramienta, reconociendo sus limitaciones 
+        y comprometiéndonos a evitar apropiaciones indebidas que afecten la representación auténtica de las culturas y comunidades involucradas.""")
         # Botón para generar
         if st.button("🚀 Generar versión personalizada", type="primary", use_container_width=True, key="btn_crear"):
             if not prompt_personalizado.strip():
